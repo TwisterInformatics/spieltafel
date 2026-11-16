@@ -31,9 +31,18 @@ export default function SearchScreen() {
             <Text style={s.appTitle}>Spieltafel</Text>
             <Text style={ui.sub}>Welches Spiel spielt ihr heute?</Text>
           </View>
-          <Pressable onPress={() => router.push('/verlauf')} style={s.historyBtn} accessibilityRole="button">
-            <Text style={s.historyText}>Verlauf</Text>
-          </Pressable>
+          <View style={s.headerBtns}>
+            <Pressable onPress={() => router.push('/verlauf')} style={s.historyBtn} accessibilityRole="button">
+              <Text style={s.historyText}>Verlauf</Text>
+            </Pressable>
+            <Pressable
+              onPress={() => router.push('/einstellungen')}
+              style={s.settingsBtn}
+              accessibilityRole="button"
+              accessibilityLabel="Einstellungen">
+              <Text style={s.settingsIcon}>⚙</Text>
+            </Pressable>
+          </View>
         </View>
 
         <TextInput
@@ -90,6 +99,16 @@ const sBase = StyleSheet.create({
   appTitle: { fontSize: 30, fontWeight: '800', color: Colors.ink, letterSpacing: -0.5 },
   historyBtn: { paddingVertical: 8, paddingHorizontal: 14, borderRadius: 20, backgroundColor: Colors.surface },
   historyText: { color: Colors.primary, fontWeight: '700' },
+  headerBtns: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  settingsBtn: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: Colors.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  settingsIcon: { color: Colors.primary, fontSize: 20 },
   search: {
     height: 48,
     borderRadius: 14,

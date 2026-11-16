@@ -3,7 +3,7 @@ import type { SQLiteDatabase } from 'expo-sqlite';
 import type { Game, GameSettings, Participant, RoundData } from '@/domain/types';
 
 export const DATABASE_NAME = 'spieltafel.db';
-const SCHEMA_VERSION = 1;
+const SCHEMA_VERSION = 2;
 
 /** Legt die Tabellen an. Neue Schema-Versionen hier als weitere Schritte ergänzen. */
 export async function migrate(db: SQLiteDatabase): Promise<void> {
@@ -34,7 +34,29 @@ export async function migrate(db: SQLiteDatabase): Promise<void> {
       );
     `);
   }
+  if (current < 2) {
+    await db.execAsync(`
+      CREATE TABLE IF NOT EXISTS app_settings (
+        key TEXT PRIMARY KEY NOT NULL,
+        value TEXT NOT NULL
+      );
+    `);
+  }
   await db.execAsync(`PRAGMA user_version = ${SCHEMA_VERSION}`);
+}
+
+/** Gespeicherter Wert einer App-Einstellung oder null, wenn noch nie gesetzt. */
+export async function getAppSetting(db: SQLiteDatabase, key: string): Promise<string | null> {
+  const row = await db.getFirstAsync<{ value: string }>('SELECT value FROM app_settings WHERE key = ?', key);
+  return row?.value ?? null;
+}
+
+export async function setAppSetting(db: SQLiteDatabase, key: string, value: string): Promise<void> {
+  await db.runAsync(
+    'INSERT INTO app_settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value',
+    key,
+    value,
+  );
 }
 
 interface GameRow {
