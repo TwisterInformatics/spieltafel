@@ -3,13 +3,16 @@ import { useSQLiteContext } from 'expo-sqlite';
 import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
-import { Avatar, Button, Card, Chip, Label, NumberField, Screen, Title, styles as ui } from '@/components/ui';
+import { Avatar, Button, Card, Chip, Label, NumberField, Screen, Title, useUi } from '@/components/ui';
+import { useScaledStyles } from '@/constants/layout';
 import { Colors, PlayerColors } from '@/constants/theme';
 import { createGame, recentPlayers } from '@/data/db';
 import { getTemplate } from '@/domain/templates';
 import type { EndRule, GameSettings, Participant, WinnerRule } from '@/domain/types';
 
 export default function NewGameScreen() {
+  const ui = useUi();
+  const s = useScaledStyles(sBase);
   const { templateId } = useLocalSearchParams<{ templateId: string }>();
   const template = getTemplate(templateId);
   const db = useSQLiteContext();
@@ -164,8 +167,9 @@ function NameRow({
   onChange: (v: string) => void;
   onRemove?: () => void;
 }) {
+  const s = useScaledStyles(sBase);
   return (
-    <Card style={{ paddingVertical: 10 }}>
+    <Card style={s.nameRow}>
       <Avatar name={value || String(index + 1)} color={color} />
       <View style={{ flex: 1, minWidth: 0 }}>
         <TextInput
@@ -187,7 +191,8 @@ function NameRow({
   );
 }
 
-const s = StyleSheet.create({
+const sBase = StyleSheet.create({
+  nameRow: { paddingVertical: 10 },
   nameInput: { width: '100%', fontSize: 17, fontWeight: '600', color: Colors.ink, paddingVertical: 8 },
   remove: { fontSize: 24, color: Colors.faint, paddingHorizontal: 4 },
   add: {

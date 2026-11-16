@@ -2,7 +2,8 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 
-import { Card, GameIcon, Screen, Title, styles as ui } from '@/components/ui';
+import { Card, GameIcon, Screen, Title, useUi } from '@/components/ui';
+import { useScaledStyles } from '@/constants/layout';
 import { Colors, TemplateColors } from '@/constants/theme';
 import { useGames } from '@/data/hooks';
 import { participantsLine, shortScore, winnerText } from '@/domain/summary';
@@ -20,6 +21,8 @@ function dayLabel(ts: number): string {
 }
 
 export default function HistoryScreen() {
+  const ui = useUi();
+  const s = useScaledStyles(sBase);
   const games = useGames();
   const [query, setQuery] = useState('');
   if (!games) return null;
@@ -52,7 +55,7 @@ export default function HistoryScreen() {
       />
       {games.length === 0 ? <Text style={ui.meta}>Noch keine Partien. Startet eine über die Spielsuche.</Text> : null}
       {groups.map((grp) => (
-        <View key={grp.day} style={{ gap: 12 }}>
+        <View key={grp.day} style={s.group}>
           <Text style={s.day}>{grp.day}</Text>
           {grp.games.map((g) => {
             const t = getTemplate(g.templateId);
@@ -66,7 +69,7 @@ export default function HistoryScreen() {
                     {status}
                   </Text>
                 </View>
-                <Text style={{ color: '#b4b9b5', fontSize: 22 }}>›</Text>
+                <Text style={s.chev}>›</Text>
               </Card>
             );
           })}
@@ -76,7 +79,9 @@ export default function HistoryScreen() {
   );
 }
 
-const s = StyleSheet.create({
+const sBase = StyleSheet.create({
   search: { height: 48, borderRadius: 14, backgroundColor: Colors.surface, paddingHorizontal: 16, fontSize: 16, color: Colors.ink },
+  group: { gap: 12 },
+  chev: { color: '#b4b9b5', fontSize: 22 },
   day: { fontSize: 13, fontWeight: '700', color: Colors.muted, marginTop: 6 },
 });

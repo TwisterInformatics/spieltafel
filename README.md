@@ -46,3 +46,15 @@ npm run typecheck   # TypeScript
 Ein neues Spiel braucht meist nur einen Eintrag in `src/domain/templates.ts`. Nur wenn die Wertung ganz neu ist, kommt eine neue Art in `src/domain/scoring.ts` und ein Eingabeformular in `src/app/partie/[id]/runde.tsx` dazu.
 
 Runden werden als Rohdaten gespeichert (zum Beispiel Ansage und erzielte Punkte). Die Punkte rechnet die App bei jeder Anzeige neu aus. So bleiben alte Partien richtig, wenn eine Regel korrigiert wird.
+
+## Tablets
+
+Ab einer kürzeren Bildschirmseite von 600 dp gilt ein Gerät als Tablet. Dann werden Schrift, Abstände und Bedienelemente um 30 % grösser und der Inhalt wird auf höchstens 860 dp Breite zentriert (`src/constants/layout.ts`). Auf dem iPad ist die App freigeschaltet (`supportsTablet`), und sie dreht sich mit dem Gerät.
+
+## Android App Bundle (AAB) für Google Play
+
+Es gibt zwei Wege.
+
+**GitHub Actions** (`.github/workflows/android-aab.yml`): Bei jedem Push auf `main`, bei Pull Requests und per Knopf unter *Actions → Android AAB → Run workflow* entsteht ein AAB. Es liegt danach im Lauf unter *Artifacts* zum Download. Damit Google Play es annimmt, braucht das Repository vier Secrets mit dem Upload-Schlüssel (Namen stehen oben im Workflow). Ohne Secrets entsteht nur ein Test-AAB. Die `versionCode` ist die Laufnummer des Workflows.
+
+**EAS Build** (Expo-Cloud): Auf einem Computer mit Node.js `npx eas-cli@latest build --platform android --profile production` ausführen. Expo legt beim ersten Mal den Upload-Schlüssel an und verwaltet ihn. Dafür braucht es ein kostenloses Expo-Konto.

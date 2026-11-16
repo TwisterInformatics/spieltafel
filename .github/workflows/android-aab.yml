@@ -1,0 +1,89 @@
+# Baut das Android App Bundle (AAB) für Google Play.
+#
+# Signiert wird mit dem Upload-Schlüssel aus den Repository-Secrets:
+#   ANDROID_UPLOAD_KEYSTORE_BASE64  Keystore-Datei, base64-kodiert
+#   ANDROID_UPLOAD_KEYSTORE_PASSWORD
+#   ANDROID_UPLOAD_KEY_ALIAS
+#   ANDROID_UPLOAD_KEY_PASSWORD
+# Fehlen die Secrets, entsteht ein Test-AAB mit Debug-Signatur, das Google Play ablehnt.
+#
+# Die versionCode ist die Laufnummer dieses Workflows, damit jeder Upload eine höhere Nummer hat.
+
+name: Android AAB
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Abhängigkeiten installieren
+        run: npm ci
+
+      - name: Tests und Typprüfung
+        run: |
+          npm test
+          npm run typecheck
+
+      - name: versionCode setzen
+        run: |
+          node -e '
+            const fs = require("fs");
+            const app = JSON.parse(fs.readFileSync("app.json", "utf8"));
+            app.expo.android.versionCode = Number(process.env.GITHUB_RUN_NUMBER);
+            fs.writeFileSync("app.json", JSON.stringify(app, null, 2));
+          '
+
+      - name: Android-Projekt erzeugen
+        run: npx expo prebuild --platform android --no-install
+
+      - name: AAB bauen
+        working-directory: android
+        run: ./gradlew bundleRelease --no-daemon
+
+      - name: Mit Upload-Schlüssel signieren
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_UPLOAD_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_UPLOAD_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEY_PASSWORD }}
+        run: |
+          AAB=android/app/build/outputs/bundle/release/app-release.aab
+          mkdir -p out
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "::warning::Keine Signier-Secrets gesetzt. Das AAB ist nur ein Test und wird von Google Play abgelehnt."
+            cp "$AAB" out/spieltafel-test-debug-signiert.aab
+            exit 0
+          fi
+          echo "$KEYSTORE_BASE64" | base64 -d > upload.jks
+          # Debug-Signatur entfernen und mit dem Upload-Schlüssel neu signieren
+          zip -q -d "$AAB" 'META-INF/*' || true
+          jarsigner -sigalg SHA256withRSA -digestalg SHA-256 \
+            -keystore upload.jks -storepass "$KEYSTORE_PASSWORD" -keypass "$KEY_PASSWORD" \
+            "$AAB" "$KEY_ALIAS"
+          jarsigner -verify "$AAB"
+          rm upload.jks
+          cp "$AAB" "out/spieltafel-${GITHUB_RUN_NUMBER}.aab"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: spieltafel-aab
+          path: out/*.aab
+          retention-days: 30

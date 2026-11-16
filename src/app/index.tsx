@@ -3,7 +3,8 @@ import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Card, Chip, GameIcon, Label, styles as ui } from '@/components/ui';
+import { Card, Chip, GameIcon, Label, useContentWidth, useUi } from '@/components/ui';
+import { useScaledStyles } from '@/constants/layout';
 import { Colors, TemplateColors } from '@/constants/theme';
 import { useGames } from '@/data/hooks';
 import { participantsLine, shortScore } from '@/domain/summary';
@@ -13,6 +14,9 @@ import type { GameTemplate } from '@/domain/types';
 const CATEGORIES: (GameTemplate['category'] | undefined)[] = [undefined, 'Kartenspiel', 'Legespiel', 'Frei'];
 
 export default function SearchScreen() {
+  const ui = useUi();
+  const width = useContentWidth();
+  const s = useScaledStyles(sBase);
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState<GameTemplate['category'] | undefined>();
   const games = useGames();
@@ -21,7 +25,7 @@ export default function SearchScreen() {
 
   return (
     <SafeAreaView style={ui.screen} edges={['top', 'left', 'right']}>
-      <ScrollView contentContainerStyle={ui.content} keyboardShouldPersistTaps="handled">
+      <ScrollView contentContainerStyle={[ui.content, width]} keyboardShouldPersistTaps="handled">
         <View style={s.header}>
           <View style={{ flex: 1 }}>
             <Text style={s.appTitle}>Spieltafel</Text>
@@ -81,7 +85,7 @@ export default function SearchScreen() {
   );
 }
 
-const s = StyleSheet.create({
+const sBase = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', marginTop: 8 },
   appTitle: { fontSize: 30, fontWeight: '800', color: Colors.ink, letterSpacing: -0.5 },
   historyBtn: { paddingVertical: 8, paddingHorizontal: 14, borderRadius: 20, backgroundColor: Colors.surface },

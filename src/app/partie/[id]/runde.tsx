@@ -3,7 +3,8 @@ import { useSQLiteContext } from 'expo-sqlite';
 import { useState, type ReactNode } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { Avatar, Button, Card, Chip, Hint, Label, NumberField, Screen, styles as ui } from '@/components/ui';
+import { Avatar, Button, Card, Chip, Hint, Label, NumberField, Screen, useUi } from '@/components/ui';
+import { useScaledStyles } from '@/constants/layout';
 import { Colors } from '@/constants/theme';
 import { addRound, finishGame, getGame } from '@/data/db';
 import { useGame } from '@/data/hooks';
@@ -23,6 +24,8 @@ export default function RoundScreen() {
 }
 
 function RoundForm({ game }: { game: Game }) {
+  const ui = useUi();
+  const s = useScaledStyles(sBase);
   const db = useSQLiteContext();
   const kind = getTemplate(game.templateId)?.kind ?? 'rounds';
   const ps = game.participants;
@@ -215,6 +218,7 @@ function RoundForm({ game }: { game: Game }) {
 }
 
 function PlayerRow({ p, meta, children }: { p: Participant; meta?: string; children: ReactNode }) {
+  const ui = useUi();
   return (
     <Card>
       <Avatar name={p.name} color={p.color} />
@@ -228,6 +232,8 @@ function PlayerRow({ p, meta, children }: { p: Participant; meta?: string; child
 }
 
 function Stepper({ value, onChange }: { value: number | null; onChange: (v: number | null) => void }) {
+  const ui = useUi();
+  const s = useScaledStyles(sBase);
   return (
     <View style={ui.row}>
       <Pressable style={[s.step, { backgroundColor: Colors.surfaceMuted }]} onPress={() => onChange((value ?? 0) - 1)} accessibilityLabel="Minus 1">
@@ -241,7 +247,7 @@ function Stepper({ value, onChange }: { value: number | null; onChange: (v: numb
   );
 }
 
-const s = StyleSheet.create({
+const sBase = StyleSheet.create({
   team: { flex: 1, flexDirection: 'column', gap: 8 },
   teamName: { fontSize: 15, fontWeight: '600', color: Colors.ink, textAlign: 'center' },
   auto: { width: 120, alignItems: 'center', justifyContent: 'center' },
