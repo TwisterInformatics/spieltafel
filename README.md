@@ -53,7 +53,9 @@ Ab einer kürzeren Bildschirmseite von 600 dp gilt ein Gerät als Tablet. Dann w
 
 ## Android App Bundle (AAB) für Google Play
 
-Es gibt zwei Wege.
+Es gibt drei Wege.
+
+**Eigener PC mit Android Studio**: Schritt für Schritt in [BUILD-ANDROID.md](BUILD-ANDROID.md).
 
 **GitHub Actions** (`.github/workflows/android-aab.yml`): Bei jedem Push auf `main`, bei Pull Requests und per Knopf unter *Actions → Android AAB → Run workflow* entsteht ein AAB. Es liegt danach im Lauf unter *Artifacts* zum Download. Damit Google Play es annimmt, braucht das Repository vier Secrets mit dem Upload-Schlüssel (Namen stehen oben im Workflow). Ohne Secrets entsteht nur ein Test-AAB. Die `versionCode` ist die Laufnummer des Workflows.
 
