@@ -7,7 +7,7 @@ import { useScaledStyles } from '@/constants/layout';
 import { Colors } from '@/constants/theme';
 import { createGame, deleteLastRound, finishGame } from '@/data/db';
 import { useGame } from '@/data/hooks';
-import { ranking, scoreTable, totals } from '@/domain/scoring';
+import { alive, ranking, scoreTable, totals } from '@/domain/scoring';
 import { winnerText } from '@/domain/summary';
 import { getTemplate } from '@/domain/templates';
 import type { Game } from '@/domain/types';
@@ -63,7 +63,18 @@ export default function ScoreboardScreen() {
 
   return (
     <Screen footer={footer}>
-      <Stack.Screen options={{ title: template?.name ?? 'Spielstand' }} />
+      <Stack.Screen
+        options={{
+          title: template?.name ?? 'Spielstand',
+          headerRight: template
+            ? () => (
+                <Pressable onPress={() => router.push(`/anleitung/${template.id}`)} hitSlop={10} accessibilityRole="button">
+                  <Text style={s.rules}>Regeln</Text>
+                </Pressable>
+              )
+            : undefined,
+        }}
+      />
       {finished ? <Winner game={game} /> : <Title sub={statusLine(game)}>Spielstand</Title>}
       {finished ? <Ranking game={game} /> : null}
       {game.rounds.length > 0 ? <ScoreTable game={game} /> : <Text style={ui.meta}>Noch keine Runde gespielt.</Text>}
@@ -89,6 +100,10 @@ function statusLine(game: Game): string {
   if (end.type === 'target') return `${base} · Ziel ${end.target}`;
   if (end.type === 'rounds') return `${base} von ${end.rounds}`;
   return base;
+}
+
+function usesLives(game: Game): boolean {
+  return game.settings.end.type === 'lastStanding';
 }
 
 function roundLabel(game: Game, i: number): string {
@@ -118,11 +133,11 @@ function ScoreTable({ game }: { game: Game }) {
       {rows.map((row, i) => (
         <View key={i} style={s.tr}>
           {cell('l', roundLabel(game, i), s.first)}
-          {game.participants.map((p) => cell(p.id, String(row[p.id] ?? 0)))}
+          {game.participants.map((p) => cell(p.id, usesLives(game) ? (row[p.id] ? '✕' : '') : String(row[p.id] ?? 0)))}
         </View>
       ))}
       <View style={[s.tr, s.total]}>
-        {cell('t', 'Total', [s.first, s.totalText])}
+        {cell('t', usesLives(game) ? 'Leben' : 'Total', [s.first, s.totalText])}
         {game.participants.map((p) => cell(p.id, String(t[p.id]), s.totalText))}
       </View>
     </View>
@@ -135,6 +150,14 @@ function Progress({ game }: { game: Game }) {
   const s = useScaledStyles(sBase);
   const end = game.settings.end;
   const leader = ranking(game)[0];
+  if (end.type === 'lastStanding') {
+    const left = alive(game);
+    return (
+      <Card>
+        <Text style={ui.cardTitle}>{`Noch im Spiel: ${left.map((p) => p.name).join(', ')}`}</Text>
+      </Card>
+    );
+  }
   if (end.type === 'target') {
     const t = totals(game);
     const top = game.participants.reduce((a, b) => (t[a.id] >= t[b.id] ? a : b));
@@ -168,7 +191,7 @@ function Winner({ game }: { game: Game }) {
         <Text style={s.crownText}>{top.participant.name.charAt(0)}</Text>
       </View>
       <Text style={s.winnerText}>{winnerText(game)}</Text>
-      <Text style={s.winnerSub}>{`mit ${top.total} Punkten`}</Text>
+      <Text style={s.winnerSub}>{usesLives(game) ? `mit ${top.total} Leben übrig` : `mit ${top.total} Punkten`}</Text>
     </View>
   );
 }
@@ -208,6 +231,7 @@ const sBase = StyleSheet.create({
   winnerText: { fontSize: 26, fontWeight: '800', color: '#fff', textAlign: 'center' },
   rank: { width: 20, fontWeight: '800', color: Colors.muted, fontSize: 16 },
   rankTotal: { fontWeight: '800', fontSize: 18, color: Colors.ink },
+  rules: { color: Colors.primary, fontWeight: '700', fontSize: 16, paddingHorizontal: 12 },
   undo: { alignSelf: 'center', padding: 8 },
   undoText: { color: Colors.danger, fontWeight: '600', fontSize: 15 },
   crown: { width: 72, height: 72, borderRadius: 36, backgroundColor: Colors.gold, alignItems: 'center', justifyContent: 'center' },

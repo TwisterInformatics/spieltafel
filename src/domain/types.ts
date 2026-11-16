@@ -1,5 +1,5 @@
 /** Art der Wertung. Bestimmt, welche Eingabe eine Runde hat und wie gerechnet wird. */
-export type ScoringKind = 'rounds' | 'skyjo' | 'jassSchieber' | 'differenzler' | 'coiffeur';
+export type ScoringKind = 'rounds' | 'skyjo' | 'jassSchieber' | 'differenzler' | 'coiffeur' | 'placement' | 'lives' | 'wizard';
 
 export type WinnerRule = 'highest' | 'lowest';
 
@@ -7,17 +7,31 @@ export type EndRule =
   | { type: 'target'; target: number }
   | { type: 'rounds'; rounds: number }
   | { type: 'allModes' }
-  | { type: 'manual' };
+  | { type: 'manual' }
+  /** Jeder startet mit Leben. Wer keine mehr hat, ist draussen. Der Letzte im Spiel gewinnt. */
+  | { type: 'lastStanding'; lives: number };
 
 export interface JassMode {
   name: string;
   factor: number;
 }
 
+/** Kurzanleitung, die in der App angezeigt wird. */
+export interface GameGuide {
+  /** Ein Satz: Worum geht es? */
+  goal: string;
+  /** Ablauf in wenigen kurzen Schritten. */
+  steps: string[];
+  /** Wie gezählt wird und wann das Spiel endet. */
+  scoring: string[];
+  /** Ausführliche Anleitung im Internet. */
+  link?: { title: string; url: string };
+}
+
 export interface GameTemplate {
   id: string;
   name: string;
-  category: 'Kartenspiel' | 'Legespiel' | 'Frei';
+  category: 'Kartenspiel' | 'Legespiel' | 'Würfelspiel' | 'Frei';
   description: string;
   keywords: string[];
   kind: ScoringKind;
@@ -31,6 +45,9 @@ export interface GameTemplate {
   winnerAdjustable?: boolean;
   end: EndRule;
   modes?: JassMode[];
+  /** Anzahl Runden ergibt sich aus den Karten: Karten im Spiel geteilt durch Spieler (Wizard). */
+  roundsFromDeck?: number;
+  guide: GameGuide;
 }
 
 export interface Participant {
@@ -59,7 +76,12 @@ export type RoundData =
       stoeck: Record<string, number>;
     }
   | { kind: 'differenzler'; ansage: Record<string, number>; erzielt: Record<string, number> }
-  | { kind: 'coiffeur'; teamId: string; modeName: string; points: number };
+  | { kind: 'coiffeur'; teamId: string; modeName: string; points: number }
+  /** Reihenfolge, in der die Spieler fertig wurden. Der Erste zuerst. */
+  | { kind: 'placement'; order: string[] }
+  /** Wer in dieser Runde ein Leben verliert. */
+  | { kind: 'lives'; losers: string[] }
+  | { kind: 'wizard'; ansage: Record<string, number>; stiche: Record<string, number> };
 
 export interface Game {
   id: string;

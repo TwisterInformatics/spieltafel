@@ -23,6 +23,7 @@ export default function NewGameScreen() {
   const [recent, setRecent] = useState<string[]>([]);
   const [target, setTarget] = useState<number | null>(template?.end.type === 'target' ? template.end.target : null);
   const [rounds, setRounds] = useState<number | null>(template?.end.type === 'rounds' ? template.end.rounds : null);
+  const [lives, setLives] = useState<number | null>(template?.end.type === 'lastStanding' ? template.end.lives : null);
   const [winner, setWinner] = useState<WinnerRule>(template?.winner ?? 'highest');
   const [saving, setSaving] = useState(false);
 
@@ -36,7 +37,10 @@ export default function NewGameScreen() {
   const filled = names.map((n) => n.trim()).filter(Boolean);
   const enough = isTeams ? filled.length === initialCount : filled.length >= template.minPlayers;
   const settingsOk =
-    (template.end.type !== 'target' || (target ?? 0) > 0) && (template.end.type !== 'rounds' || (rounds ?? 0) > 0);
+    (template.end.type !== 'target' || (target ?? 0) > 0) &&
+    (template.end.type !== 'rounds' || (rounds ?? 0) > 0 || !!template.roundsFromDeck) &&
+    (template.end.type !== 'lastStanding' || (lives ?? 0) > 0);
+  const deckRounds = template.roundsFromDeck ? Math.floor(template.roundsFromDeck / Math.max(filled.length, template.minPlayers, 1)) : null;
 
   const setName = (i: number, v: string) => setNames((prev) => prev.map((n, j) => (j === i ? v : n)));
   const fillNext = (name: string) => {
@@ -60,7 +64,8 @@ export default function NewGameScreen() {
     }
     let end: EndRule = template.end;
     if (end.type === 'target') end = { type: 'target', target: target ?? end.target };
-    if (end.type === 'rounds') end = { type: 'rounds', rounds: rounds ?? end.rounds };
+    if (end.type === 'rounds') end = { type: 'rounds', rounds: deckRounds ?? rounds ?? end.rounds };
+    if (end.type === 'lastStanding') end = { type: 'lastStanding', lives: lives ?? end.lives };
     const settings: GameSettings = { winner, end, modes: template.modes };
     const id = await createGame(db, template.id, participants, settings);
     router.replace(`/partie/${id}`);
@@ -73,6 +78,16 @@ export default function NewGameScreen() {
     <Screen footer={<Button title="Partie starten" onPress={start} disabled={!enough || !settingsOk || saving} />}>
       <Stack.Screen options={{ title: template.name }} />
       <Title sub={template.description}>Neue Partie</Title>
+      <Card onPress={() => router.push(`/anleitung/${template.id}`)}>
+        <Text style={s.guideIcon}>?</Text>
+        <View style={{ flex: 1, gap: 2 }}>
+          <Text style={ui.cardTitle}>Kurzanleitung</Text>
+          <Text style={ui.meta} numberOfLines={2}>
+            {template.guide.goal}
+          </Text>
+        </View>
+        <Text style={s.chev}>›</Text>
+      </Card>
 
       {isTeams ? (
         Array.from({ length: template.teams ?? 2 }, (_, t) => (
@@ -123,7 +138,19 @@ export default function NewGameScreen() {
           <NumberField value={target} onChange={setTarget} width={100} />
         </Card>
       ) : null}
-      {template.end.type === 'rounds' ? (
+      {template.end.type === 'rounds' && deckRounds !== null ? (
+        <Card style={s.setting}>
+          <Text style={s.settingText}>{`Runden (${template.roundsFromDeck} Karten ÷ Spieler)`}</Text>
+          <Text style={s.value}>{deckRounds}</Text>
+        </Card>
+      ) : null}
+      {template.end.type === 'lastStanding' ? (
+        <Card style={s.setting}>
+          <Text style={s.settingText}>Leben pro Spieler</Text>
+          <NumberField value={lives} onChange={setLives} width={100} />
+        </Card>
+      ) : null}
+      {template.end.type === 'rounds' && deckRounds === null ? (
         <Card style={s.setting}>
           <Text style={s.settingText}>Anzahl Runden</Text>
           <NumberField value={rounds} onChange={setRounds} width={100} />
@@ -207,4 +234,17 @@ const sBase = StyleSheet.create({
   setting: { justifyContent: 'space-between' },
   settingText: { fontSize: 16, color: Colors.ink, flex: 1 },
   value: { fontSize: 16, fontWeight: '700', color: Colors.primary },
+  guideIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: Colors.primaryLight,
+    color: Colors.primary,
+    fontSize: 18,
+    fontWeight: '800',
+    textAlign: 'center',
+    lineHeight: 36,
+    overflow: 'hidden',
+  },
+  chev: { color: '#b4b9b5', fontSize: 22 },
 });

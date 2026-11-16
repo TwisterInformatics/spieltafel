@@ -8,7 +8,18 @@ import { useScaledStyles } from '@/constants/layout';
 import { Colors } from '@/constants/theme';
 import { addRound, finishGame, getGame } from '@/data/db';
 import { useGame } from '@/data/hooks';
-import { isFinishedByRules, JASS_MATCH, jassCounterPoints, openCoiffeurModes, roundScores, skyjoRoundScores, totals } from '@/domain/scoring';
+import {
+  alive,
+  isFinishedByRules,
+  JASS_MATCH,
+  jassCounterPoints,
+  openCoiffeurModes,
+  placementPoints,
+  roundScores,
+  skyjoRoundScores,
+  totals,
+  wizardPoints,
+} from '@/domain/scoring';
 import { getTemplate } from '@/domain/templates';
 import type { Game, Participant, RoundData } from '@/domain/types';
 
@@ -38,6 +49,8 @@ function RoundForm({ game }: { game: Game }) {
   const [modeName, setModeName] = useState<string | null>(null);
   const [teamId, setTeamId] = useState<string>(ps[0]?.id);
   const [stoeck, setStoeck] = useState<string | null>(null);
+  const [order, setOrder] = useState<string[]>([]);
+  const [losers, setLosers] = useState<string[]>([]);
 
   const set = (setter: typeof setScores) => (pid: string, v: number | null) => setter((prev) => ({ ...prev, [pid]: v }));
   const modes = game.settings.modes ?? [];
@@ -75,6 +88,17 @@ function RoundForm({ game }: { game: Game }) {
     if (complete) data = { kind: 'differenzler', ansage: filled(scores), erzielt: filled(second) };
     const sum = ps.reduce((acc, p) => acc + (second[p.id] ?? 0), 0);
     if (ps.every((p) => second[p.id] !== null) && sum !== 157) hint = `Die erzielten Punkte ergeben ${sum}. Normal sind es zusammen 157.`;
+  } else if (kind === 'placement') {
+    if (ps.length > 1 && order.length >= ps.length - 1) data = { kind: 'placement', order };
+  } else if (kind === 'lives') {
+    if (losers.length > 0) data = { kind: 'lives', losers };
+  } else if (kind === 'wizard') {
+    const complete = ps.every((p) => scores[p.id] !== null && second[p.id] !== null);
+    if (complete) data = { kind: 'wizard', ansage: filled(scores), stiche: filled(second) };
+    const sum = ps.reduce((acc, p) => acc + (second[p.id] ?? 0), 0);
+    const cards = game.rounds.length + 1;
+    if (ps.every((p) => second[p.id] !== null) && sum !== cards)
+      hint = `Die Stiche ergeben ${sum}. In Runde ${cards} gibt es ${cards} ${cards === 1 ? 'Stich' : 'Stiche'}.`;
   } else if (kind === 'coiffeur') {
     const pts = scores[teamId];
     if (modeName && pts !== null) data = { kind: 'coiffeur', teamId, modeName, points: pts };
@@ -212,9 +236,97 @@ function RoundForm({ game }: { game: Game }) {
         </>
       ) : null}
 
+      {kind === 'placement' ? (
+        <>
+          <Label>Wer ist fertig? Der Reihe nach antippen</Label>
+          <View style={ui.wrap}>
+            {ps
+              .filter((p) => !order.includes(p.id) && order.length < ps.length - 1)
+              .map((p) => (
+                <Chip key={p.id} title={p.name} onPress={() => setOrder([...order, p.id])} />
+              ))}
+          </View>
+          {(() => {
+            const pts = placementPoints(order, ps.map((p) => p.id));
+            const full = [...order, ...ps.filter((p) => !order.includes(p.id)).map((p) => p.id)];
+            const shown = order.length >= ps.length - 1 ? full : order;
+            return shown.map((pid, i) => {
+              const p = ps.find((x) => x.id === pid)!;
+              return (
+                <PlayerRow key={pid} p={p} meta={`${i + 1}. Platz · ${officeName(i, ps.length)}`}>
+                  <Text style={s.value}>{`+${pts[pid]}`}</Text>
+                </PlayerRow>
+              );
+            });
+          })()}
+          {order.length > 0 ? (
+            <Pressable onPress={() => setOrder([])} style={{ alignSelf: 'center', padding: 8 }}>
+              <Text style={s.link}>Reihenfolge neu antippen</Text>
+            </Pressable>
+          ) : null}
+        </>
+      ) : null}
+
+      {kind === 'lives' ? (
+        <>
+          <Label>Wer verliert ein Leben?</Label>
+          {alive(game).map((p) => {
+            const on = losers.includes(p.id);
+            const left = totals(game)[p.id];
+            return (
+              <Card key={p.id} onPress={() => setLosers(on ? losers.filter((x) => x !== p.id) : [...losers, p.id])} style={on ? s.picked : undefined}>
+                <Avatar name={p.name} color={p.color} />
+                <View style={{ flex: 1, gap: 3 }}>
+                  <Text style={ui.cardTitle}>{p.name}</Text>
+                  <Text style={ui.meta}>{on ? `noch ${left - 1} Leben` : `${left} Leben`}</Text>
+                </View>
+                <Text style={[s.value, { color: on ? Colors.danger : Colors.faint }]}>{on ? '−1' : '○'}</Text>
+              </Card>
+            );
+          })}
+          {game.participants.length > alive(game).length ? (
+            <Text style={ui.meta}>{`Draussen: ${game.participants
+              .filter((p) => !alive(game).includes(p))
+              .map((p) => p.name)
+              .join(', ')}`}</Text>
+          ) : null}
+        </>
+      ) : null}
+
+      {kind === 'wizard'
+        ? ps.map((p) => (
+            <Card key={p.id} style={{ flexDirection: 'column', alignItems: 'stretch', gap: 10 }}>
+              <View style={ui.row}>
+                <Avatar name={p.name} color={p.color} size={32} />
+                <Text style={[ui.cardTitle, { flex: 1 }]}>{p.name}</Text>
+                <Text style={ui.meta}>
+                  {scores[p.id] !== null && second[p.id] !== null
+                    ? `diese Runde ${wizardPoints(scores[p.id]!, second[p.id]!)}`
+                    : `Total ${totals(game)[p.id]}`}
+                </Text>
+              </View>
+              <View style={[ui.row, { justifyContent: 'space-between' }]}>
+                <Text style={ui.meta}>Ansage</Text>
+                <NumberField value={scores[p.id]} onChange={(v) => set(setScores)(p.id, v)} />
+                <Text style={ui.meta}>Stiche</Text>
+                <NumberField value={second[p.id]} onChange={(v) => set(setSecond)(p.id, v)} />
+              </View>
+            </Card>
+          ))
+        : null}
+
       {hint ? <Hint>{hint}</Hint> : null}
     </Screen>
   );
+}
+
+/** Ämter beim Arschlöchle: König, Vizekönig, Bürger, Vize-Arschloch, Arschloch. */
+function officeName(index: number, count: number): string {
+  if (index === 0) return 'König';
+  if (index === count - 1) return 'Arschloch';
+  if (index === 1 && count > 3) return 'Vizekönig';
+  if (index === count - 2 && count > 3) return 'Vize-Arschloch';
+  return 'Bürger';
 }
 
 function PlayerRow({ p, meta, children }: { p: Participant; meta?: string; children: ReactNode }) {
@@ -255,6 +367,7 @@ const sBase = StyleSheet.create({
   autoNote: { fontSize: 12, fontWeight: '600', color: Colors.primary, textAlign: 'center' },
   link: { color: Colors.primary, fontWeight: '700' },
   value: { fontSize: 18, fontWeight: '700', color: Colors.primary },
+  picked: { borderWidth: 2, borderColor: Colors.danger },
   step: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
   stepText: { fontSize: 20, fontWeight: '700' },
 });

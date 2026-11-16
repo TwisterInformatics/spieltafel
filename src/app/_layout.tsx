@@ -26,6 +26,7 @@ export default function RootLayout() {
           <Stack.Screen name="verlauf" options={{ title: '' }} />
           <Stack.Screen name="einstellungen" options={{ title: '' }} />
           <Stack.Screen name="neu/[templateId]" options={{ title: 'Neue Partie' }} />
+          <Stack.Screen name="anleitung/[templateId]" options={{ title: 'Kurzanleitung' }} />
           <Stack.Screen name="partie/[id]/index" options={{ title: 'Spielstand' }} />
           <Stack.Screen name="partie/[id]/runde" options={{ title: 'Runde erfassen', presentation: 'modal' }} />
         </Stack>

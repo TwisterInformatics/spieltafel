@@ -22,6 +22,20 @@ export function skyjoRoundScores(scores: Record<string, number>, finisherId: str
   return result;
 }
 
+/** Platzierung (Arschlöchle): Der Erste bekommt so viele Punkte, wie er Mitspieler hat, der Letzte 0. */
+export function placementPoints(order: string[], participantIds: string[]): Record<string, number> {
+  const n = participantIds.length;
+  const full = [...order, ...participantIds.filter((id) => !order.includes(id))];
+  const out: Record<string, number> = {};
+  for (const id of participantIds) out[id] = n - 1 - full.indexOf(id);
+  return out;
+}
+
+/** Wizard: Ansage getroffen gibt 20 plus 10 je Stich, sonst 10 Abzug je Stich daneben. */
+export function wizardPoints(ansage: number, stiche: number): number {
+  return ansage === stiche ? 20 + 10 * stiche : -10 * Math.abs(ansage - stiche);
+}
+
 /** Punkte, die eine einzelne Runde jedem Teilnehmer gibt. */
 export function roundScores(round: RoundData, participants: Participant[]): Record<string, number> {
   const out: Record<string, number> = {};
@@ -45,6 +59,17 @@ export function roundScores(round: RoundData, participants: Participant[]): Reco
       for (const p of participants) {
         out[p.id] = Math.abs((round.ansage[p.id] ?? 0) - (round.erzielt[p.id] ?? 0));
       }
+      break;
+    case 'placement': {
+      const pts = placementPoints(round.order, participants.map((p) => p.id));
+      for (const p of participants) out[p.id] = pts[p.id];
+      break;
+    }
+    case 'lives':
+      for (const id of round.losers) if (id in out) out[id] = -1;
+      break;
+    case 'wizard':
+      for (const p of participants) out[p.id] = wizardPoints(round.ansage[p.id] ?? 0, round.stiche[p.id] ?? 0);
       break;
     case 'coiffeur':
       // Nur das spielende Team schreibt; der Faktor wird beim Speichern mitgegeben.
@@ -70,9 +95,16 @@ export function scoreTable(game: Game): Record<string, number>[] {
   });
 }
 
+/** Startwert jedes Teilnehmers: die Leben bei "Letzter im Spiel", sonst 0. */
+export function startValue(game: Game): number {
+  return game.settings.end.type === 'lastStanding' ? game.settings.end.lives : 0;
+}
+
+/** Gesamtpunkte, bei Spielen mit Leben die verbleibenden Leben. */
 export function totals(game: Game): Record<string, number> {
   const sum: Record<string, number> = {};
-  for (const p of game.participants) sum[p.id] = 0;
+  const start = startValue(game);
+  for (const p of game.participants) sum[p.id] = start;
   for (const row of scoreTable(game)) {
     for (const [id, v] of Object.entries(row)) sum[id] = (sum[id] ?? 0) + v;
   }
@@ -97,9 +129,17 @@ export function isFinishedByRules(game: Game): boolean {
       return game.rounds.length >= end.rounds;
     case 'allModes':
       return (game.settings.modes?.length ?? 0) > 0 && game.participants.every((p) => openCoiffeurModes(game, p.id).length === 0);
+    case 'lastStanding':
+      return game.participants.length > 1 && alive(game).length <= 1;
     case 'manual':
       return false;
   }
+}
+
+/** Teilnehmer, die noch Leben haben. */
+export function alive(game: Game): Participant[] {
+  const t = totals(game);
+  return game.participants.filter((p) => t[p.id] > 0);
 }
 
 export interface RankEntry {

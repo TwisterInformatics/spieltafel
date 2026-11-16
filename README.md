@@ -2,7 +2,7 @@
 
 Spieltafel ist eine App für iPhone und Android, mit der eine Spielrunde Punkte festhält und den Sieger automatisch ermittelt.
 
-Die erste Version kennt diese Spiele:
+Die App kennt diese Spiele. Zu jedem gibt es eine Kurzanleitung und, wo vorhanden, einen Link zu einer ausführlichen Anleitung:
 
 | Spiel | Wertung |
 | --- | --- |
@@ -10,7 +10,16 @@ Die erste Version kennt diese Spiele:
 | Jass Schieber | 2 Teams, Gegenpunkte (157 minus eigene) automatisch, Match 257, Weis, Stöck, Trumpf-Faktor |
 | Jass Differenzler | Strafpunkte = Abstand zwischen Ansage und erzielten Punkten, feste Anzahl Runden |
 | Jass Coiffeur | 2 Teams, jede Spielart einmal, Punkte mal Faktor der Spielart |
+| Tschau Sepp | Strafpunkte der Handkarten, wer 200 erreicht verliert |
+| Arschlöchle | Punkte nach Platz (König = Spieler minus 1, Arschloch 0) |
+| Gämsch | 2 Teams, auf 10 Punkte |
+| Schnauz | Leben (Vorgabe 4 = 3 plus Schwimmen), der Letzte im Spiel gewinnt |
+| Uno | Strafpunkte, wer 500 erreicht verliert |
+| Phase 10 | Strafpunkte, Ende von Hand |
+| Rommé | Strafpunkte, Ende von Hand |
+| Wizard | Ansage und Stiche, 20 plus 10 je Stich oder 10 Abzug je Stich daneben, Runden = 60 Karten geteilt durch Spieler |
 | Qwirkle | 2 bis 8 Spieler, höchste Summe gewinnt |
+| Mäxle | Würfelspiel mit Leben (Vorgabe 6) |
 | Freie Zählung | Beliebig viele Spieler, keine Regeln, Sieger höchste oder tiefste Summe |
 
 Alle Partien werden lokal auf dem Handy in SQLite gespeichert. Es gibt kein Konto und keinen Server.
@@ -43,7 +52,7 @@ npm run typecheck   # TypeScript
 | `src/components` | Gemeinsame UI-Bausteine |
 | `src/constants/theme.ts` | Farben aus dem Figma-Design |
 
-Ein neues Spiel braucht meist nur einen Eintrag in `src/domain/templates.ts`. Nur wenn die Wertung ganz neu ist, kommt eine neue Art in `src/domain/scoring.ts` und ein Eingabeformular in `src/app/partie/[id]/runde.tsx` dazu.
+Ein neues Spiel braucht meist nur einen Eintrag in `src/domain/templates.ts`, inklusive Kurzanleitung (`guide`). Nur wenn die Wertung ganz neu ist, kommt eine neue Art in `src/domain/scoring.ts` und ein Eingabeformular in `src/app/partie/[id]/runde.tsx` dazu.
 
 Runden werden als Rohdaten gespeichert (zum Beispiel Ansage und erzielte Punkte). Die Punkte rechnet die App bei jeder Anzeige neu aus. So bleiben alte Partien richtig, wenn eine Regel korrigiert wird.
 

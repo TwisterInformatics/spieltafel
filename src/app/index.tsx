@@ -11,7 +11,7 @@ import { participantsLine, shortScore } from '@/domain/summary';
 import { getTemplate, searchTemplates } from '@/domain/templates';
 import type { GameTemplate } from '@/domain/types';
 
-const CATEGORIES: (GameTemplate['category'] | undefined)[] = [undefined, 'Kartenspiel', 'Legespiel', 'Frei'];
+const CATEGORIES: (GameTemplate['category'] | undefined)[] = [undefined, 'Kartenspiel', 'Legespiel', 'Würfelspiel', 'Frei'];
 
 export default function SearchScreen() {
   const ui = useUi();

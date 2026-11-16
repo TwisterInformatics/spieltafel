@@ -22,7 +22,16 @@ export const TemplateColors: Record<string, string> = {
   'jass-schieber': '#1f6f4a',
   'jass-differenzler': '#1f6f4a',
   'jass-coiffeur': '#1f6f4a',
+  'tschau-sepp': '#c0563b',
+  arschloechle: '#8a5cc2',
+  gaemsch: '#2a9d8f',
+  schnauz: '#3a7bd5',
+  uno: '#c0563b',
+  'phase-10': '#d4567f',
+  romme: '#8a5cc2',
+  wizard: '#3b4a8f',
   qwirkle: '#e0a526',
+  maexle: '#e0a526',
   frei: '#6b726d',
 };
 

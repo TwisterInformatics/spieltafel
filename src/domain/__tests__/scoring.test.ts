@@ -129,10 +129,13 @@ describe('Freie Zählung', () => {
 
 describe('Suche', () => {
   it('findet Spiele über Name und Suchbegriffe, ohne Gross- und Kleinschreibung', () => {
-    expect(searchTemplates('jass').map((t) => t.id)).toEqual(['jass-schieber', 'jass-differenzler', 'jass-coiffeur']);
+    expect(searchTemplates('jass schieber').map((t) => t.id)).toEqual(['jass-schieber']);
+    expect(searchTemplates('jass').map((t) => t.id)).toEqual(
+      expect.arrayContaining(['jass-schieber', 'jass-differenzler', 'jass-coiffeur']),
+    );
     expect(searchTemplates('QWIRKLE').map((t) => t.id)).toEqual(['qwirkle']);
     expect(searchTemplates('zahlen').map((t) => t.id)).toEqual(['frei']);
-    expect(searchTemplates('').length).toBe(6);
+    expect(searchTemplates('').length).toBe(15);
     expect(searchTemplates('', 'Legespiel').map((t) => t.id)).toEqual(['qwirkle']);
   });
 });
