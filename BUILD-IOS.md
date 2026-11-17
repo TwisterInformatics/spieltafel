@@ -2,6 +2,40 @@
 
 Diese Anleitung baut die App für iPhone und iPad und lädt sie zu App Store Connect hoch. Der Code ist derselbe wie für Android.
 
+Es gibt zwei Wege: lokal mit Xcode (so wurde Version 1.0.0 hochgeladen, ohne Expo-Konto) oder über den Cloud-Dienst EAS von Expo (Abschnitte 1 bis 3).
+
+## Lokal mit Xcode bauen und hochladen
+
+Voraussetzungen: Xcode ist mit dem Team "Twister Informatics GmbH" (`UJWD8Y5RSY`) angemeldet. Die Bundle-ID `ch.spieltafel.app` ist im Entwicklerkonto registriert und die App in App Store Connect angelegt. Beides ist erledigt.
+
+Xcode-Projekt aus `app.json` erzeugen:
+
+```bash
+npx expo prebuild --platform ios
+```
+
+`prebuild` ändert die Skripte in `package.json`. Das rückgängig machen:
+
+```bash
+git checkout -- package.json
+```
+
+Archiv bauen und signieren (etwa 10 Minuten):
+
+```bash
+xcodebuild -workspace ios/Spieltafel.xcworkspace -scheme Spieltafel -configuration Release -destination 'generic/platform=iOS' -archivePath ios/build/Spieltafel.xcarchive archive -allowProvisioningUpdates DEVELOPMENT_TEAM=UJWD8Y5RSY CODE_SIGN_STYLE=Automatic
+```
+
+Zu App Store Connect hochladen:
+
+```bash
+xcodebuild -exportArchive -archivePath ios/build/Spieltafel.xcarchive -exportOptionsPlist assets/store/ios/ExportOptions.plist -exportPath ios/build/export -allowProvisioningUpdates
+```
+
+Der Upload endet mit `** EXPORT SUCCEEDED **`. Die Warnungen "Upload Symbols Failed" betreffen nur Absturzberichte fremder Bibliotheken und sind harmlos. Die Build-Nummer zählt Xcode beim Upload selbst hoch. Für eine neue Store-Version `version` in `app.json` erhöhen und `prebuild` erneut ausführen.
+
+Danach weiter bei Abschnitt 4. Die Store-Texte aus `store.config.json` von Hand in App Store Connect einfügen, `metadata:push` braucht ein Expo-Konto.
+
 ## Was schon vorbereitet ist
 
 | Was | Wo |
@@ -17,7 +51,7 @@ Diese Anleitung baut die App für iPhone und iPad und lädt sie zu App Store Con
 ## Was nur du machen kannst
 
 1. **Apple Developer Program**: Mitgliedschaft (99 USD pro Jahr) unter <https://developer.apple.com/programs/>. Ein kostenloses Entwicklerkonto reicht für den Simulator und das eigene Gerät, nicht für den Store.
-2. **Expo-Konto**: kostenlos unter <https://expo.dev/signup>. Der Build läuft dort in der Cloud.
+2. **Expo-Konto**: nur für den Weg über EAS nötig, kostenlos unter <https://expo.dev/signup>.
 3. **Datenschutzerklärung veröffentlichen**: Den Text aus `DATENSCHUTZ.md` ausfüllen und unter einer öffentlichen Adresse ablegen. Apple verlangt diese Adresse für jede App.
 4. **Support-Adresse**: eine Webseite oder Kontaktseite, auch sie ist Pflicht.
 
@@ -28,7 +62,7 @@ Die beiden Adressen danach in `store.config.json` bei `de-DE` ergänzen:
 "supportUrl": "https://…"
 ```
 
-## 1. Anmelden und Projekt verknüpfen
+## 1. Mit EAS: anmelden und Projekt verknüpfen
 
 ```bash
 npm ci
