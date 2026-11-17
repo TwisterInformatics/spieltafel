@@ -31,6 +31,10 @@ export interface GameTemplate {
   winnerAdjustable?: boolean;
   end: EndRule;
   modes?: JassMode[];
+  /** Kurzanleitung in wenigen Sätzen, je ein Punkt pro Eintrag. */
+  guide: string[];
+  /** Ausführliche Anleitung im Netz. */
+  rules?: { url: string; source: string };
 }
 
 export interface Participant {

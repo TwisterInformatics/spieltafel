@@ -3,6 +3,7 @@ import { useSQLiteContext } from 'expo-sqlite';
 import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { GameGuide } from '@/components/GameGuide';
 import { Avatar, Button, Card, Label, Screen, Title, useUi } from '@/components/ui';
 import { useLayout, useScaledStyles } from '@/constants/layout';
 import { Colors } from '@/constants/theme';
@@ -89,6 +90,7 @@ export default function ScoreboardScreen() {
             <ScrollView style={{ flex: 1 }} contentContainerStyle={s.wideTable}>
               {game.rounds.length > 0 ? <ScoreTable game={game} /> : <Text style={ui.meta}>Noch keine Runde gespielt.</Text>}
               {undo}
+              {template ? <GameGuide template={template} /> : null}
             </ScrollView>
           </View>
         </View>
@@ -104,6 +106,7 @@ export default function ScoreboardScreen() {
       {game.rounds.length > 0 ? <ScoreTable game={game} /> : <Text style={ui.meta}>Noch keine Runde gespielt.</Text>}
       {!finished && game.rounds.length > 0 ? <Progress game={game} /> : null}
       {undo}
+      {template ? <GameGuide template={template} /> : null}
     </Screen>
   );
 }

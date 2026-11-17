@@ -3,6 +3,7 @@ import { useSQLiteContext } from 'expo-sqlite';
 import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
+import { GameGuide } from '@/components/GameGuide';
 import { Avatar, Button, Card, Chip, Label, NumberField, Screen, Title, useUi } from '@/components/ui';
 import { useScaledStyles } from '@/constants/layout';
 import { Colors, PlayerColors } from '@/constants/theme';
@@ -73,6 +74,7 @@ export default function NewGameScreen() {
     <Screen footer={<Button title="Partie starten" onPress={start} disabled={!enough || !settingsOk || saving} />}>
       <Stack.Screen options={{ title: template.name }} />
       <Title sub={template.description}>Neue Partie</Title>
+      <GameGuide template={template} />
 
       {isTeams ? (
         Array.from({ length: template.teams ?? 2 }, (_, t) => (
