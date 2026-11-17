@@ -6,19 +6,9 @@ import { Card, GameIcon, Screen, Title, useUi } from '@/components/ui';
 import { useScaledStyles } from '@/constants/layout';
 import { Colors, TemplateColors } from '@/constants/theme';
 import { useGames } from '@/data/hooks';
-import { participantsLine, shortScore, winnerText } from '@/domain/summary';
+import { dayLabel, participantsLine, shortScore, winnerText } from '@/domain/summary';
 import { getTemplate } from '@/domain/templates';
 import type { Game } from '@/domain/types';
-
-function dayLabel(ts: number): string {
-  const d = new Date(ts);
-  const today = new Date();
-  const yesterday = new Date();
-  yesterday.setDate(today.getDate() - 1);
-  if (d.toDateString() === today.toDateString()) return 'Heute';
-  if (d.toDateString() === yesterday.toDateString()) return 'Gestern';
-  return d.toLocaleDateString('de-CH', { weekday: 'long', day: 'numeric', month: 'long' });
-}
 
 export default function HistoryScreen() {
   const ui = useUi();

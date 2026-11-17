@@ -1,9 +1,15 @@
-import type { ReactNode } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, View, type ViewStyle } from 'react-native';
+import { useEffect, useState, type ReactNode } from 'react';
+import { Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View, type ViewStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useLayout, useScaledStyles } from '@/constants/layout';
 import { Colors, Radius, Space } from '@/constants/theme';
+
+import { formatNumberInput, parseNumberInput } from './numberInput';
+
+// Android: "numeric" ist die Zahlentastatur mit Minus-Taste.
+// iOS: Die Zahlentastatur hat kein Minus, darum die Tastatur mit Zahlen und Satzzeichen.
+const NUMBER_KEYBOARD = Platform.OS === 'ios' ? 'numbers-and-punctuation' : 'numeric';
 
 export function Screen({ children, footer }: { children: ReactNode; footer?: ReactNode }) {
   const styles = useUi();
@@ -116,16 +122,21 @@ export function NumberField({
 }) {
   const styles = useUi();
   const { k } = useLayout();
+  // Eigener Text, damit ein angefangenes "-" stehen bleibt, bis die Ziffern kommen.
+  const [text, setText] = useState(() => formatNumberInput(value));
+  useEffect(() => {
+    // Wert von aussen geändert (z.B. Formular zurückgesetzt): Feld nachziehen.
+    setText((current) => (parseNumberInput(current).value === value ? current : formatNumberInput(value)));
+  }, [value]);
   return (
     <TextInput
-      value={value === null ? '' : String(value)}
+      value={text}
       onChangeText={(t) => {
-        const cleaned = t.replace(/[^0-9-]/g, '');
-        if (cleaned === '' || cleaned === '-') return onChange(null);
-        const n = parseInt(cleaned, 10);
-        onChange(Number.isNaN(n) ? null : n);
+        const parsed = parseNumberInput(t);
+        setText(parsed.text);
+        onChange(parsed.value);
       }}
-      keyboardType="numbers-and-punctuation"
+      keyboardType={NUMBER_KEYBOARD}
       placeholder={placeholder}
       placeholderTextColor="#a3a8a4"
       selectTextOnFocus

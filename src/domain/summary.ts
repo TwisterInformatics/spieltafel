@@ -21,6 +21,16 @@ export function winnerText(game: Game): string {
   return `${winners[0]} ${winners[0].includes(' und ') ? 'gewinnen' : 'gewinnt'}`;
 }
 
+/** "Heute", "Gestern" oder das Datum mit Wochentag. */
+export function dayLabel(ts: number, now = new Date()): string {
+  const d = new Date(ts);
+  const yesterday = new Date(now);
+  yesterday.setDate(now.getDate() - 1);
+  if (d.toDateString() === now.toDateString()) return 'Heute';
+  if (d.toDateString() === yesterday.toDateString()) return 'Gestern';
+  return d.toLocaleDateString('de-CH', { weekday: 'long', day: 'numeric', month: 'long' });
+}
+
 export function participantsLine(game: Game): string {
   return game.participants.map((p) => p.name).join(game.participants.length === 2 ? ' gegen ' : ', ');
 }

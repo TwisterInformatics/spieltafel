@@ -3,6 +3,7 @@ import { useSQLiteContext } from 'expo-sqlite';
 import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
+import { GameGuide } from '@/components/GameGuide';
 import { Avatar, Button, Card, Chip, Label, NumberField, Screen, Title, useUi } from '@/components/ui';
 import { useScaledStyles } from '@/constants/layout';
 import { Colors, PlayerColors } from '@/constants/theme';
@@ -78,16 +79,7 @@ export default function NewGameScreen() {
     <Screen footer={<Button title="Partie starten" onPress={start} disabled={!enough || !settingsOk || saving} />}>
       <Stack.Screen options={{ title: template.name }} />
       <Title sub={template.description}>Neue Partie</Title>
-      <Card onPress={() => router.push(`/anleitung/${template.id}`)}>
-        <Text style={s.guideIcon}>?</Text>
-        <View style={{ flex: 1, gap: 2 }}>
-          <Text style={ui.cardTitle}>Kurzanleitung</Text>
-          <Text style={ui.meta} numberOfLines={2}>
-            {template.guide.goal}
-          </Text>
-        </View>
-        <Text style={s.chev}>›</Text>
-      </Card>
+      <GameGuide template={template} />
 
       {isTeams ? (
         Array.from({ length: template.teams ?? 2 }, (_, t) => (
@@ -234,17 +226,4 @@ const sBase = StyleSheet.create({
   setting: { justifyContent: 'space-between' },
   settingText: { fontSize: 16, color: Colors.ink, flex: 1 },
   value: { fontSize: 16, fontWeight: '700', color: Colors.primary },
-  guideIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: Colors.primaryLight,
-    color: Colors.primary,
-    fontSize: 18,
-    fontWeight: '800',
-    textAlign: 'center',
-    lineHeight: 36,
-    overflow: 'hidden',
-  },
-  chev: { color: '#b4b9b5', fontSize: 22 },
 });

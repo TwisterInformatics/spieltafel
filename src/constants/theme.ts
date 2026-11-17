@@ -25,13 +25,14 @@ export const TemplateColors: Record<string, string> = {
   'tschau-sepp': '#c0563b',
   arschloechle: '#8a5cc2',
   gaemsch: '#2a9d8f',
-  schnauz: '#3a7bd5',
+  schwimmen: '#3a7bd5',
+  romme: '#d4567f',
+  'stiche-ansagen': '#1d2420',
   uno: '#c0563b',
-  'phase-10': '#d4567f',
-  romme: '#8a5cc2',
+  'phase-10': '#8a5cc2',
   wizard: '#3b4a8f',
-  qwirkle: '#e0a526',
   maexle: '#e0a526',
+  qwirkle: '#e0a526',
   frei: '#6b726d',
 };
 

@@ -16,18 +16,6 @@ export interface JassMode {
   factor: number;
 }
 
-/** Kurzanleitung, die in der App angezeigt wird. */
-export interface GameGuide {
-  /** Ein Satz: Worum geht es? */
-  goal: string;
-  /** Ablauf in wenigen kurzen Schritten. */
-  steps: string[];
-  /** Wie gezählt wird und wann das Spiel endet. */
-  scoring: string[];
-  /** Ausführliche Anleitung im Internet. */
-  link?: { title: string; url: string };
-}
-
 export interface GameTemplate {
   id: string;
   name: string;
@@ -47,7 +35,10 @@ export interface GameTemplate {
   modes?: JassMode[];
   /** Anzahl Runden ergibt sich aus den Karten: Karten im Spiel geteilt durch Spieler (Wizard). */
   roundsFromDeck?: number;
-  guide: GameGuide;
+  /** Kurzanleitung in wenigen Sätzen, je ein Punkt pro Eintrag. */
+  guide: string[];
+  /** Ausführliche Anleitung im Netz. */
+  rules?: { url: string; source: string };
 }
 
 export interface Participant {

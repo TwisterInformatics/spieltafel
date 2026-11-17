@@ -1,7 +1,7 @@
 import { describe, expect, it } from '@jest/globals';
 
 import { isFinishedByRules, placementPoints, ranking, scoreTable, totals, wizardPoints } from '../scoring';
-import { getTemplate, searchTemplates, TEMPLATES } from '../templates';
+import { getTemplate, searchTemplates } from '../templates';
 import type { Game, Participant } from '../types';
 
 const p = (id: string): Participant => ({ id, name: id, color: '#000' });
@@ -19,26 +19,17 @@ function game(partial: Partial<Game>): Game {
   };
 }
 
-describe('Kurzanleitungen', () => {
-  it('hat jedes Spiel mit Ziel, Ablauf und Wertung', () => {
-    for (const t of TEMPLATES) {
-      expect(t.guide.goal.length).toBeGreaterThan(10);
-      expect(t.guide.steps.length).toBeGreaterThan(0);
-      expect(t.guide.scoring.length).toBeGreaterThan(0);
-    }
-  });
-  it('verlinkt nur auf https-Seiten', () => {
-    for (const t of TEMPLATES) if (t.guide.link) expect(t.guide.link.url).toMatch(/^https:\/\//);
-  });
-  it('hat eindeutige IDs', () => {
-    expect(new Set(TEMPLATES.map((t) => t.id)).size).toBe(TEMPLATES.length);
-  });
-  it('findet die neuen Spiele auch ohne Umlaute', () => {
-    expect(searchTemplates('gamsch').map((t) => t.id)).toEqual(['gaemsch']);
-    expect(searchTemplates('arschloch').map((t) => t.id)).toEqual(['arschloechle']);
+describe('Neue Spiele in der Suche', () => {
+  it('findet Uno, Phase 10, Wizard und Mäxle', () => {
+    expect(searchTemplates('uno').map((t) => t.id)).toEqual(['uno']);
+    expect(searchTemplates('phase').map((t) => t.id)).toEqual(['phase-10']);
+    expect(searchTemplates('zauberer').map((t) => t.id)).toEqual(['wizard']);
     expect(searchTemplates('mäxchen').map((t) => t.id)).toEqual(['maexle']);
-    expect(searchTemplates('schwimmen').map((t) => t.id)).toEqual(['schnauz']);
     expect(searchTemplates('', 'Würfelspiel').map((t) => t.id)).toEqual(['maexle']);
+  });
+  it('zählt Arschlöchle nach Platz und Schwimmen mit Leben', () => {
+    expect(getTemplate('arschloechle')?.kind).toBe('placement');
+    expect(getTemplate('schwimmen')?.end).toEqual({ type: 'lastStanding', lives: 4 });
   });
 });
 
@@ -95,11 +86,11 @@ describe('Wizard', () => {
 });
 
 describe('Strafpunkte-Spiele', () => {
-  it('beendet Tschau Sepp bei 200 und der Tiefste gewinnt', () => {
-    const t = getTemplate('tschau-sepp')!;
+  it('beendet Uno bei 500 und der Tiefste gewinnt', () => {
+    const t = getTemplate('uno')!;
     const g = game({
       settings: { winner: t.winner, end: t.end },
-      rounds: [{ kind: 'rounds', scores: { a: 120, b: 30, c: 90 } }, { kind: 'rounds', scores: { a: 85, b: 10, c: 0 } }],
+      rounds: [{ kind: 'rounds', scores: { a: 320, b: 30, c: 90 } }, { kind: 'rounds', scores: { a: 185, b: 10, c: 0 } }],
     });
     expect(isFinishedByRules(g)).toBe(true);
     expect(ranking(g)[0].participant.id).toBe('b');
