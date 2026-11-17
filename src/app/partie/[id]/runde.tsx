@@ -1,10 +1,10 @@
 import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useState, type ReactNode } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View, type ViewStyle } from 'react-native';
 
 import { Avatar, Button, Card, Chip, Hint, Label, NumberField, Screen, useUi } from '@/components/ui';
-import { useScaledStyles } from '@/constants/layout';
+import { useLayout, useScaledStyles } from '@/constants/layout';
 import { Colors } from '@/constants/theme';
 import { addRound, finishGame, getGame } from '@/data/db';
 import { useGame } from '@/data/hooks';
@@ -27,6 +27,7 @@ function RoundForm({ game }: { game: Game }) {
   const ui = useUi();
   const s = useScaledStyles(sBase);
   const db = useSQLiteContext();
+  const { wide } = useLayout();
   const kind = getTemplate(game.templateId)?.kind ?? 'rounds';
   const ps = game.participants;
   const [saving, setSaving] = useState(false);
@@ -90,19 +91,26 @@ function RoundForm({ game }: { game: Game }) {
   }
 
   const nextNo = game.rounds.length + 1;
+  const title = `Runde ${nextNo} erfassen`;
 
-  return (
+  const form = (
     <Screen footer={<Button title="Runde speichern" onPress={save} disabled={!data || saving} />}>
-      <Stack.Screen options={{ title: `Runde ${nextNo} erfassen` }} />
+      <Stack.Screen options={{ title }} />
 
-      {kind === 'rounds' || kind === 'skyjo'
-        ? ps.map((p) => (
-            <PlayerRow key={p.id} p={p} meta={`Total ${totals(game)[p.id]}${finisher === p.id ? ' · hat beendet' : ''}`}>
+      {kind === 'rounds' || kind === 'skyjo' ? (
+        <View style={wide ? s.playerGrid : s.playerList}>
+          {ps.map((p) => (
+            <PlayerRow
+              key={p.id}
+              p={p}
+              meta={`Total ${totals(game)[p.id]}${finisher === p.id ? ' · hat beendet' : ''}`}
+              style={wide ? s.playerCell : undefined}>
               {kind === 'rounds' ? <Stepper value={scores[p.id]} onChange={(v) => set(setScores)(p.id, v)} /> : null}
               {kind === 'skyjo' ? <NumberField value={scores[p.id]} onChange={(v) => set(setScores)(p.id, v)} /> : null}
             </PlayerRow>
-          ))
-        : null}
+          ))}
+        </View>
+      ) : null}
 
       {kind === 'skyjo' ? (
         <>
@@ -215,12 +223,30 @@ function RoundForm({ game }: { game: Game }) {
       {hint ? <Hint>{hint}</Hint> : null}
     </Screen>
   );
+
+  if (!wide) return form;
+
+  // Tablet quer: Dialog über dem abgedunkelten Spielstand
+  return (
+    <View style={s.backdrop}>
+      <Pressable style={StyleSheet.absoluteFill} onPress={() => router.back()} accessibilityLabel="Schliessen" />
+      <View style={s.dialog}>
+        <View style={s.dialogHead}>
+          <Text style={s.dialogTitle}>{title}</Text>
+          <Pressable onPress={() => router.back()} accessibilityRole="button">
+            <Text style={s.link}>Abbrechen</Text>
+          </Pressable>
+        </View>
+        {form}
+      </View>
+    </View>
+  );
 }
 
-function PlayerRow({ p, meta, children }: { p: Participant; meta?: string; children: ReactNode }) {
+function PlayerRow({ p, meta, style, children }: { p: Participant; meta?: string; style?: ViewStyle; children: ReactNode }) {
   const ui = useUi();
   return (
-    <Card>
+    <Card style={style}>
       <Avatar name={p.name} color={p.color} />
       <View style={{ flex: 1, gap: 3 }}>
         <Text style={ui.cardTitle}>{p.name}</Text>
@@ -257,4 +283,11 @@ const sBase = StyleSheet.create({
   value: { fontSize: 18, fontWeight: '700', color: Colors.primary },
   step: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
   stepText: { fontSize: 20, fontWeight: '700' },
+  playerList: { gap: 12 },
+  playerGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
+  playerCell: { flexGrow: 1, flexBasis: '45%' },
+  backdrop: { flex: 1, backgroundColor: 'rgba(29,36,32,0.45)', alignItems: 'center', justifyContent: 'center' },
+  dialog: { width: 560, height: '88%', backgroundColor: Colors.background, borderRadius: 24, overflow: 'hidden' },
+  dialogHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingTop: 18 },
+  dialogTitle: { fontSize: 24, fontWeight: '800', color: Colors.ink, letterSpacing: -0.4 },
 });

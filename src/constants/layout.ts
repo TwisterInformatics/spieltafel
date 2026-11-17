@@ -7,9 +7,15 @@ const TABLET_MIN_SIDE = 600;
 const TABLET_SCALE = 1.3;
 /** Maximale Breite des Inhalts auf Tablets, damit Zeilen nicht über den ganzen Bildschirm laufen. */
 const TABLET_MAX_WIDTH = 860;
+/** Ab dieser Breite (in dp) zeigen Tablets zwei Spalten nebeneinander, typisch im Querformat. */
+const WIDE_MIN_WIDTH = 960;
 
 export interface Layout {
   isTablet: boolean;
+  /** Tablet mit genug Breite für zwei Spalten (Querformat). */
+  wide: boolean;
+  /** Spalten für Kachelraster: 1 auf Handys, 2 auf Tablets hochkant, 3 auf breiten Tablets. */
+  gridColumns: number;
   /** Faktor für Grössen: 1 auf Handys, grösser auf Tablets. */
   k: number;
   /** Maximale Inhaltsbreite oder undefined auf Handys. */
@@ -18,7 +24,14 @@ export interface Layout {
 
 export function layoutFor(width: number, height: number): Layout {
   const isTablet = Math.min(width, height) >= TABLET_MIN_SIDE;
-  return { isTablet, k: isTablet ? TABLET_SCALE : 1, maxWidth: isTablet ? TABLET_MAX_WIDTH : undefined };
+  const wide = isTablet && width >= WIDE_MIN_WIDTH;
+  return {
+    isTablet,
+    wide,
+    gridColumns: wide ? 3 : isTablet ? 2 : 1,
+    k: isTablet ? TABLET_SCALE : 1,
+    maxWidth: isTablet ? TABLET_MAX_WIDTH : undefined,
+  };
 }
 
 export function useLayout(): Layout {

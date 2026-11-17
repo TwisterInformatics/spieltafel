@@ -1,9 +1,10 @@
 import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
 import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Avatar, Button, Card, Screen, Title, useUi } from '@/components/ui';
-import { useScaledStyles } from '@/constants/layout';
+import { Avatar, Button, Card, Label, Screen, Title, useUi } from '@/components/ui';
+import { useLayout, useScaledStyles } from '@/constants/layout';
 import { Colors } from '@/constants/theme';
 import { createGame, deleteLastRound, finishGame } from '@/data/db';
 import { useGame } from '@/data/hooks';
@@ -15,6 +16,7 @@ import type { Game } from '@/domain/types';
 export default function ScoreboardScreen() {
   const ui = useUi();
   const s = useScaledStyles(sBase);
+  const { wide } = useLayout();
   const { id } = useLocalSearchParams<{ id: string }>();
   const db = useSQLiteContext();
   const [game, reload] = useGame(id);
@@ -61,6 +63,39 @@ export default function ScoreboardScreen() {
     </>
   );
 
+  const undo =
+    game.rounds.length > 0 ? (
+      <Pressable onPress={confirmUndo} style={s.undo}>
+        <Text style={s.undoText}>Letzte Runde löschen</Text>
+      </Pressable>
+    ) : null;
+
+  if (wide) {
+    // Tablet quer: links Stand, Rangliste und Aktionen, rechts die ganze Rundentabelle.
+    return (
+      <SafeAreaView style={ui.screen} edges={['bottom', 'left', 'right']}>
+        <Stack.Screen options={{ title: template?.name ?? 'Spielstand' }} />
+        <View style={s.wideRow}>
+          <View style={s.wideSide}>
+            <ScrollView style={{ flex: 1 }} contentContainerStyle={s.wideSideContent}>
+              {finished ? <Winner game={game} /> : <Title sub={statusLine(game)}>Spielstand</Title>}
+              {!finished && game.rounds.length > 0 ? <Progress game={game} /> : null}
+              {game.rounds.length > 0 ? <Ranking game={game} compact /> : null}
+            </ScrollView>
+            <View style={s.wideActions}>{footer}</View>
+          </View>
+          <View style={{ flex: 1 }}>
+            <Label>Runden</Label>
+            <ScrollView style={{ flex: 1 }} contentContainerStyle={s.wideTable}>
+              {game.rounds.length > 0 ? <ScoreTable game={game} /> : <Text style={ui.meta}>Noch keine Runde gespielt.</Text>}
+              {undo}
+            </ScrollView>
+          </View>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <Screen footer={footer}>
       <Stack.Screen options={{ title: template?.name ?? 'Spielstand' }} />
@@ -68,11 +103,7 @@ export default function ScoreboardScreen() {
       {finished ? <Ranking game={game} /> : null}
       {game.rounds.length > 0 ? <ScoreTable game={game} /> : <Text style={ui.meta}>Noch keine Runde gespielt.</Text>}
       {!finished && game.rounds.length > 0 ? <Progress game={game} /> : null}
-      {game.rounds.length > 0 ? (
-        <Pressable onPress={confirmUndo} style={s.undo}>
-          <Text style={s.undoText}>Letzte Runde löschen</Text>
-        </Pressable>
-      ) : null}
+      {undo}
     </Screen>
   );
 }
@@ -173,9 +204,26 @@ function Winner({ game }: { game: Game }) {
   );
 }
 
-function Ranking({ game }: { game: Game }) {
+function Ranking({ game, compact }: { game: Game; compact?: boolean }) {
   const ui = useUi();
   const s = useScaledStyles(sBase);
+  if (compact) {
+    // Tablet: alle Plätze als Zeilen in einer Karte, damit die ganze Rangliste sichtbar bleibt
+    return (
+      <View style={s.rankList}>
+        {ranking(game).map((e, i) => (
+          <View key={e.participant.id} style={[s.rankRow, i > 0 && s.rankDivider]}>
+            <Text style={s.rank}>{e.rank}</Text>
+            <Avatar name={e.participant.name} color={e.participant.color} size={28} />
+            <Text style={[ui.cardTitle, { flex: 1 }]} numberOfLines={1}>
+              {e.participant.name}
+            </Text>
+            <Text style={s.rankTotal}>{e.total}</Text>
+          </View>
+        ))}
+      </View>
+    );
+  }
   return (
     <>
       {ranking(game).map((e) => (
@@ -210,5 +258,13 @@ const sBase = StyleSheet.create({
   rankTotal: { fontWeight: '800', fontSize: 18, color: Colors.ink },
   undo: { alignSelf: 'center', padding: 8 },
   undoText: { color: Colors.danger, fontWeight: '600', fontSize: 15 },
+  rankList: { backgroundColor: Colors.surface, borderRadius: 16, paddingVertical: 4 },
+  rankRow: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 6, paddingHorizontal: 16 },
+  rankDivider: { borderTopWidth: 1, borderTopColor: '#f0ede5' },
+  wideRow: { flex: 1, flexDirection: 'row', gap: 20, paddingHorizontal: 20, paddingTop: 4, paddingBottom: 12 },
+  wideSide: { width: 310 },
+  wideSideContent: { gap: 12, paddingBottom: 12 },
+  wideActions: { gap: 10, paddingTop: 8 },
+  wideTable: { paddingTop: 12, paddingBottom: 12, gap: 12 },
   crown: { width: 72, height: 72, borderRadius: 36, backgroundColor: Colors.gold, alignItems: 'center', justifyContent: 'center' },
 });
