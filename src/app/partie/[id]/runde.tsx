@@ -287,7 +287,8 @@ const sBase = StyleSheet.create({
   playerGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
   playerCell: { flexGrow: 1, flexBasis: '45%' },
   backdrop: { flex: 1, backgroundColor: 'rgba(29,36,32,0.45)', alignItems: 'center', justifyContent: 'center' },
-  dialog: { width: 560, height: '88%', backgroundColor: Colors.background, borderRadius: 24, overflow: 'hidden' },
+  // Breit genug für zwei Spalten mit ±-Taste und Zahlenfeld neben dem Namen
+  dialog: { width: 760, maxWidth: '92%', height: '88%', backgroundColor: Colors.background, borderRadius: 24, overflow: 'hidden' },
   dialogHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingTop: 18 },
   dialogTitle: { fontSize: 24, fontWeight: '800', color: Colors.ink, letterSpacing: -0.4 },
 });

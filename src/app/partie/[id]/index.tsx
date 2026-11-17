@@ -175,8 +175,8 @@ function Progress({ game }: { game: Game }) {
     const pct = Math.min(1, t[top.id] / end.target);
     return (
       <Card style={{ flexDirection: 'column', alignItems: 'stretch', gap: 8 }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Text style={ui.cardTitle}>{`${top.name} ${verb(top.name, 'ist', 'sind')} am nächsten an ${end.target}`}</Text>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
+          <Text style={[ui.cardTitle, { flex: 1 }]}>{`${top.name} ${verb(top.name, 'ist', 'sind')} am nächsten an ${end.target}`}</Text>
           <Text style={s.progressValue}>{t[top.id]}</Text>
         </View>
         <View style={s.bar}>
