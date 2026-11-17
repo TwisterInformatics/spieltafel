@@ -2,7 +2,7 @@
   "expo": {
     "name": "Spieltafel",
     "slug": "spieltafel",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "orientation": "default",
     "icon": "./assets/images/icon.png",
     "scheme": "spieltafel",
@@ -21,7 +21,7 @@
       },
       "predictiveBackGestureEnabled": false,
       "package": "ch.spieltafel.app",
-      "versionCode": 2
+      "versionCode": 3
     },
     "web": {
       "output": "single",

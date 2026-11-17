@@ -135,7 +135,7 @@ function RoundForm({ game }: { game: Game }) {
           <View style={{ flexDirection: 'row', gap: 12 }}>
             <Card style={s.team}>
               <Text style={s.teamName}>{ps[0].name}</Text>
-              <NumberField value={scores[ps[0].id]} onChange={(v) => set(setScores)(ps[0].id, v)} width={120} />
+              <NumberField value={scores[ps[0].id]} onChange={(v) => set(setScores)(ps[0].id, v)} width={120} allowNegative={false} />
               <Pressable onPress={() => set(setScores)(ps[0].id, JASS_MATCH)}>
                 <Text style={s.link}>Match 257</Text>
               </Pressable>
@@ -151,7 +151,7 @@ function RoundForm({ game }: { game: Game }) {
           <Label>Weis</Label>
           {ps.map((p) => (
             <PlayerRow key={p.id} p={p}>
-              <NumberField value={second[p.id]} onChange={(v) => set(setSecond)(p.id, v)} />
+              <NumberField value={second[p.id]} onChange={(v) => set(setSecond)(p.id, v)} allowNegative={false} />
             </PlayerRow>
           ))}
           <Label>Stöck (20 Punkte)</Label>
@@ -177,9 +177,9 @@ function RoundForm({ game }: { game: Game }) {
               </View>
               <View style={[ui.row, { justifyContent: 'space-between' }]}>
                 <Text style={ui.meta}>Ansage</Text>
-                <NumberField value={scores[p.id]} onChange={(v) => set(setScores)(p.id, v)} />
+                <NumberField value={scores[p.id]} onChange={(v) => set(setScores)(p.id, v)} allowNegative={false} />
                 <Text style={ui.meta}>Erzielt</Text>
-                <NumberField value={second[p.id]} onChange={(v) => set(setSecond)(p.id, v)} />
+                <NumberField value={second[p.id]} onChange={(v) => set(setSecond)(p.id, v)} allowNegative={false} />
               </View>
             </Card>
           ))
@@ -211,7 +211,7 @@ function RoundForm({ game }: { game: Game }) {
           {openCoiffeurModes(game, teamId).length === 0 ? <Text style={ui.meta}>Dieses Team hat alle Spielarten gespielt.</Text> : null}
           <Label>Punkte</Label>
           <Card style={{ justifyContent: 'space-between' }}>
-            <NumberField value={scores[teamId]} onChange={(v) => set(setScores)(teamId, v)} width={120} />
+            <NumberField value={scores[teamId]} onChange={(v) => set(setScores)(teamId, v)} width={120} allowNegative={false} />
             <Pressable onPress={() => set(setScores)(teamId, JASS_MATCH)}>
               <Text style={s.link}>Match 257</Text>
             </Pressable>

@@ -1,6 +1,6 @@
 import { describe, expect, it } from '@jest/globals';
 
-import { formatNumberInput, parseNumberInput } from '../numberInput';
+import { formatNumberInput, parseNumberInput, toggleSign } from '../numberInput';
 
 describe('parseNumberInput', () => {
   it('lässt ein einzelnes Minus stehen, damit man negative Zahlen eintippen kann', () => {
@@ -24,5 +24,17 @@ describe('parseNumberInput', () => {
   it('formatiert gespeicherte Werte für das Feld', () => {
     expect(formatNumberInput(null)).toBe('');
     expect(formatNumberInput(-7)).toBe('-7');
+  });
+});
+
+describe('toggleSign', () => {
+  it('dreht das Vorzeichen um', () => {
+    expect(toggleSign('5')).toEqual({ text: '-5', value: -5 });
+    expect(toggleSign('-12')).toEqual({ text: '12', value: 12 });
+  });
+
+  it('setzt im leeren Feld ein Minus, damit die Ziffern danach negativ werden', () => {
+    expect(toggleSign('')).toEqual({ text: '-', value: null });
+    expect(toggleSign('-')).toEqual({ text: '', value: null });
   });
 });
