@@ -18,6 +18,11 @@
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+        "language": "de-DE",
+        "metadataPath": "./store.config.json"
+      }
+    }
   }
 }

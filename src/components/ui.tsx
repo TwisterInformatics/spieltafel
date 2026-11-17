@@ -1,8 +1,19 @@
-import { useEffect, useState, type ReactNode } from 'react';
-import { Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View, type ViewStyle } from 'react-native';
+import { useEffect, useRef, useState, type ComponentRef, type ReactNode, type RefObject } from 'react';
+import {
+  Dimensions,
+  Keyboard,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  type ViewStyle,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { useLayout, useScaledStyles } from '@/constants/layout';
+import { keyboardOverlap, useLayout, useScaledStyles } from '@/constants/layout';
 import { Colors, Radius, Space } from '@/constants/theme';
 
 import { formatNumberInput, parseNumberInput } from './numberInput';
@@ -11,16 +22,45 @@ import { formatNumberInput, parseNumberInput } from './numberInput';
 // iOS: Die Zahlentastatur hat kein Minus, darum die Tastatur mit Zahlen und Satzzeichen.
 const NUMBER_KEYBOARD = Platform.OS === 'ios' ? 'numbers-and-punctuation' : 'numeric';
 
+type ViewRef = ComponentRef<typeof View>;
+
+/**
+ * iOS verkleinert das Fenster nicht, wenn die Tastatur erscheint (Android macht das selbst).
+ * Liefert, wie weit die Tastatur den Container überdeckt, damit Inhalt und Fusszeile darüber bleiben.
+ */
+function useKeyboardOverlap(container: RefObject<ViewRef | null>): number {
+  const [overlap, setOverlap] = useState(0);
+  const { isTablet } = useLayout();
+  useEffect(() => {
+    if (Platform.OS !== 'ios') return;
+    const show = Keyboard.addListener('keyboardWillShow', (e) => {
+      container.current?.measureInWindow((_x: number, y: number, _w: number, h: number) => {
+        setOverlap(keyboardOverlap(y + h, Dimensions.get('window').height, e.endCoordinates.screenY, isTablet));
+      });
+    });
+    const hide = Keyboard.addListener('keyboardWillHide', () => setOverlap(0));
+    return () => {
+      show.remove();
+      hide.remove();
+    };
+  }, [container, isTablet]);
+  return overlap;
+}
+
 export function Screen({ children, footer }: { children: ReactNode; footer?: ReactNode }) {
   const styles = useUi();
   const width = useContentWidth();
+  const container = useRef<ViewRef>(null);
+  const overlap = useKeyboardOverlap(container);
   return (
-    <SafeAreaView style={styles.screen} edges={['bottom', 'left', 'right']}>
-      <ScrollView contentContainerStyle={[styles.content, width]} keyboardShouldPersistTaps="handled">
-        {children}
-      </ScrollView>
-      {footer ? <View style={[styles.footer, width]}>{footer}</View> : null}
-    </SafeAreaView>
+    <View ref={container} style={[styles.screen, { paddingBottom: overlap }]} collapsable={false}>
+      <SafeAreaView style={styles.screen} edges={overlap > 0 ? ['left', 'right'] : ['bottom', 'left', 'right']}>
+        <ScrollView contentContainerStyle={[styles.content, width]} keyboardShouldPersistTaps="handled">
+          {children}
+        </ScrollView>
+        {footer ? <View style={[styles.footer, width]}>{footer}</View> : null}
+      </SafeAreaView>
+    </View>
   );
 }
 

@@ -11,7 +11,10 @@
       "icon": "./assets/images/icon.png",
       "bundleIdentifier": "ch.spieltafel.app",
       "supportsTablet": true,
-      "buildNumber": "1"
+      "buildNumber": "1",
+      "config": {
+        "usesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {

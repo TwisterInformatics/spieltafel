@@ -1,6 +1,6 @@
 import { describe, expect, it } from '@jest/globals';
 
-import { layoutFor, scaleStyles } from '../layout';
+import { keyboardOverlap, layoutFor, scaleStyles } from '../layout';
 
 describe('Tablet-Layout', () => {
   it('erkennt Tablets an der kürzeren Bildschirmseite', () => {
@@ -22,5 +22,21 @@ describe('Tablet-Layout', () => {
   it('lässt Handy-Stile unverändert', () => {
     const base = { a: { fontSize: 10 } };
     expect(scaleStyles(base, 1)).toBe(base);
+  });
+});
+
+describe('Tastatur auf iOS', () => {
+  it('rechnet auf normalen Screens die Überdeckung bis zum unteren Bildschirmrand', () => {
+    expect(keyboardOverlap(844, 844, 508, false)).toBe(336);
+    expect(keyboardOverlap(1376, 1376, 971, true)).toBe(405);
+  });
+  it('gleicht in Modal-Blättern den Abstand zum oberen Bildschirmrand aus', () => {
+    // iPhone: Blatt beginnt 54 unter dem Rand und reicht bis ganz unten.
+    expect(keyboardOverlap(790, 844, 508, false)).toBe(336);
+    // iPad: Blatt schwebt, oben 43 und unten 52 Abstand.
+    expect(keyboardOverlap(1281, 1376, 971, true)).toBeGreaterThanOrEqual(350);
+  });
+  it('liefert 0, wenn die Tastatur am unteren Rand ausserhalb des Bildschirms liegt', () => {
+    expect(keyboardOverlap(844, 844, 844, false)).toBe(0);
   });
 });

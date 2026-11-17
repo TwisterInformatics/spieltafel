@@ -1,0 +1,50 @@
+{
+  "configVersion": 0,
+  "apple": {
+    "info": {
+      "de-DE": {
+        "title": "Spieltafel",
+        "subtitle": "Punkte zählen für Jass & Co.",
+        "description": "Spieltafel ersetzt Zettel und Stift am Spieltisch. Spiel wählen, Namen eintragen, nach jeder Runde die Punkte eingeben: Die App rechnet, zeigt den Spielstand und ermittelt den Sieger.\n\nFÜR VIELE SPIELE VORBEREITET\n• Jass: Schieber, Differenzler und Coiffeur mit Trumpf-Faktor, Weis, Stöck und Match\n• Kartenspiele wie Tschau Sepp, Gämsch, Schwimmen (31), Rommé und Stiche ansagen\n• Lege- und Würfelspiele mit Punkten oder Leben\n• Freie Zählung für jedes andere Spiel, höchste oder tiefste Summe gewinnt\n\nSO EINFACH GEHT ES\n• Spiel suchen oder nach Kategorie filtern\n• Spieler oder Teams eintragen und starten\n• Runde für Runde erfassen, die Wertung übernimmt die App\n• Laufende Partien jederzeit fortsetzen, beendete im Verlauf nachschauen\n\nGUT ZU WISSEN\n• Zu jedem Spiel gibt es eine Kurzanleitung\n• Grosse Darstellung auf dem iPad, im Querformat mit zwei Spalten\n• Der Bildschirm bleibt auf Wunsch während der Partie an\n• Kein Konto, keine Werbung, kein Server: Alle Partien bleiben auf deinem Gerät",
+        "keywords": [
+          "Jass",
+          "Schieber",
+          "Coiffeur",
+          "Punkte",
+          "Zähler",
+          "Spielstand",
+          "Kartenspiel",
+          "Würfel",
+          "Rommé",
+          "Punkteblock",
+          "Spielblock"
+        ],
+        "releaseNotes": "Erste Version der Spieltafel."
+      }
+    },
+    "categories": ["UTILITIES", "ENTERTAINMENT"],
+    "advisory": {
+      "alcoholTobaccoOrDrugUseOrReferences": "NONE",
+      "contests": "NONE",
+      "gamblingSimulated": "NONE",
+      "horrorOrFearThemes": "NONE",
+      "matureOrSuggestiveThemes": "NONE",
+      "medicalOrTreatmentInformation": "NONE",
+      "profanityOrCrudeHumor": "NONE",
+      "sexualContentGraphicAndNudity": "NONE",
+      "sexualContentOrNudity": "NONE",
+      "violenceCartoonOrFantasy": "NONE",
+      "violenceRealistic": "NONE",
+      "violenceRealisticProlongedGraphicOrSadistic": "NONE",
+      "gambling": false,
+      "unrestrictedWebAccess": false,
+      "kidsAgeBand": null,
+      "ageRatingOverride": "NONE",
+      "koreaAgeRatingOverride": "NONE"
+    },
+    "release": {
+      "automaticRelease": false,
+      "phasedRelease": false
+    }
+  }
+}

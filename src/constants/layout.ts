@@ -39,6 +39,18 @@ export function useLayout(): Layout {
   return useMemo(() => layoutFor(width, height), [width, height]);
 }
 
+/**
+ * Die Tastatur kommt in Bildschirm-Koordinaten, der Container wird aber relativ zu seinem Screen gemessen.
+ * In einem Modal-Blatt (Runde erfassen) fehlt darum der Abstand des Blatts zum oberen Bildschirmrand.
+ * Auf dem iPhone reicht das Blatt bis ganz unten, der fehlende Abstand ist also die ganze Differenz.
+ * Auf dem iPad schwebt das Blatt etwa mittig, dort ist es die halbe Differenz.
+ */
+export function keyboardOverlap(bottom: number, windowHeight: number, keyboardTop: number, isTablet: boolean): number {
+  const missing = Math.max(0, windowHeight - bottom);
+  const sheetTop = isTablet ? missing / 2 : missing;
+  return Math.max(0, Math.round(bottom + sheetTop - keyboardTop));
+}
+
 const SCALED_KEYS = new Set([
   'fontSize',
   'lineHeight',

@@ -61,6 +61,10 @@ Runden werden als Rohdaten gespeichert (zum Beispiel Ansage und erzielte Punkte)
 
 Ab einer kürzeren Bildschirmseite von 600 dp gilt ein Gerät als Tablet. Dann werden Schrift, Abstände und Bedienelemente um 30 % grösser und der Inhalt wird auf höchstens 860 dp Breite zentriert (`src/constants/layout.ts`). Auf dem iPad ist die App freigeschaltet (`supportsTablet`), und sie dreht sich mit dem Gerät.
 
+## iPhone und iPad für den App Store
+
+Schritt für Schritt in [BUILD-IOS.md](BUILD-IOS.md). Store-Texte stehen in `store.config.json`, Screenshots in `assets/store/ios/`, der Entwurf der Datenschutzerklärung in [DATENSCHUTZ.md](DATENSCHUTZ.md).
+
 ## Android App Bundle (AAB) für Google Play
 
 Es gibt drei Wege.

@@ -39,7 +39,7 @@ export default function SearchScreen() {
       onChangeText={setQuery}
       placeholder="Spiel suchen, z.B. Jass"
       placeholderTextColor={Colors.faint}
-      style={[s.search, wide && { flex: 1 }]}
+      style={[s.search, wide && s.searchWide]}
       clearButtonMode="while-editing"
       autoCorrect={false}
     />
@@ -110,7 +110,8 @@ function HeaderButtons() {
         style={s.settingsBtn}
         accessibilityRole="button"
         accessibilityLabel="Einstellungen">
-        <Text style={s.settingsIcon}>⚙</Text>
+        {/* U+FE0E erzwingt das Textzeichen; iOS zeigt sonst ein buntes Emoji statt des grünen Zahnrads. */}
+        <Text style={s.settingsIcon}>{'\u2699\uFE0E'}</Text>
       </Pressable>
     </View>
   );
@@ -245,7 +246,9 @@ const sBase = StyleSheet.create({
   tile: { flexDirection: 'column', alignItems: 'flex-start', paddingVertical: 16, gap: 10 },
   wideRow: { flex: 1, flexDirection: 'row', paddingHorizontal: 20, gap: 20 },
   wideMain: { gap: 12, paddingTop: 4, paddingBottom: 24 },
-  searchRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  // Mit Umbruch: Passen Suchfeld und Filter nicht in eine Zeile (iPad hochkant), rutschen die Filter darunter.
+  searchRow: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 12 },
+  searchWide: { flexGrow: 1, flexBasis: 260 },
   side: { width: 280, flexGrow: 0 },
   sideContent: { gap: 12, paddingTop: 8, paddingBottom: 24 },
   recent: { backgroundColor: Colors.surface, borderRadius: 16, paddingVertical: 4 },
