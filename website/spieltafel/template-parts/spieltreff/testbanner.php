@@ -14,5 +14,6 @@ if ( spieltreff_is_live() ) {
 	<?php esc_html_e( 'Der Spieltreff ist noch nicht freigeschaltet. Nur angemeldete Benutzer sehen diese Seiten, Besucher sehen einen Hinweis.', 'spieltafel' ); ?>
 	<?php if ( current_user_can( 'manage_options' ) ) : ?>
 		<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=' . SPIELTREFF_TYPE . '&page=spieltreff-einstellungen' ) ); ?>"><?php esc_html_e( 'Freischalten', 'spieltafel' ); ?></a>
+		· <a href="<?php echo esc_url( spieltreff_url( 'konto' ) . '#testkonten' ); ?>"><?php esc_html_e( 'Testkonten anlegen', 'spieltafel' ); ?></a>
 	<?php endif; ?>
 </div>

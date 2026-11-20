@@ -50,6 +50,8 @@ $is_team = user_can( $uid, 'edit_posts' );
 		<p class="hint"><?php esc_html_e( 'Bitte bestätige noch deine E-Mail-Adresse. Den Link findest du in unserer E-Mail.', 'spieltafel' ); ?> <a href="<?php echo esc_url( spieltreff_url( 'bestaetigen' ) ); ?>"><?php esc_html_e( 'Neuen Link anfordern', 'spieltafel' ); ?></a></p>
 	<?php endif; ?>
 
+	<?php get_template_part( 'template-parts/spieltreff/testaccounts' ); ?>
+
 	<div class="st-konto-grid">
 		<section class="st-box">
 			<h2><?php esc_html_e( 'Meine Einträge', 'spieltafel' ); ?></h2>
