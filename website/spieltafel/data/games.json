@@ -107,8 +107,8 @@
       "Wer nach allen Runden die wenigsten Strafpunkte hat, gewinnt."
     ],
     "rules": {
-      "url": "https://www.pagat.com/jass/differenzler.html",
-      "source": "Pagat (englisch)"
+      "url": "https://www.bern.ch/mediencenter/medienmitteilungen/aktuell_ptk/2011-04-donnschtigjass/downloads/14donnschtigjass_differenzler_tipps.pdf",
+      "source": "Donnschtig-Jass (PDF)"
     },
     "upcoming": false
   },
@@ -193,8 +193,8 @@
       "In der App: Wer fertig ist, bekommt 0. Die anderen zählen ihre Restkarten. Wenig gewinnt."
     ],
     "rules": {
-      "url": "https://de.wikipedia.org/wiki/Tschau_Sepp",
-      "source": "Wikipedia"
+      "url": "https://de.wikipedia.org/wiki/Mau-Mau_(Kartenspiel)",
+      "source": "Wikipedia (Mau-Mau)"
     },
     "upcoming": false
   },
@@ -256,8 +256,8 @@
       "Üblich: Gämsch 1 Punkt, Doppel-Gämsch 2, falscher Ruf 1 für die Gegner, erratenes Zeichen 2. In der App pro Team einen Namen eintragen."
     ],
     "rules": {
-      "url": "https://de.wikipedia.org/wiki/G%C3%A4msch",
-      "source": "Wikipedia"
+      "url": "https://cdn.simba-dickie-group.de/downloads/601105105/601105105_Gaemsh_Spielregel_Rules-online_DE-EN.pdf",
+      "source": "Spielregel Zoch (PDF)"
     },
     "upcoming": false
   },
@@ -347,8 +347,8 @@
       "Wer am Schluss die meisten Punkte hat, gewinnt."
     ],
     "rules": {
-      "url": "https://www.pagat.com/exact/ohhell.html",
-      "source": "Pagat (englisch)"
+      "url": "https://de.wikipedia.org/wiki/Stiche-Raten",
+      "source": "Wikipedia"
     },
     "upcoming": false
   },

@@ -136,6 +136,23 @@ export function isFinishedByRules(game: Game): boolean {
   }
 }
 
+/**
+ * Hat genau die letzte Runde die Partie beendet? Eine wieder aufgenommene Partie, die ihr Ziel
+ * schon vorher erreicht hatte, läuft weiter, bis sie von Hand beendet wird.
+ */
+export function endsWithLastRound(game: Game): boolean {
+  if (game.rounds.length === 0) return false;
+  return isFinishedByRules(game) && !isFinishedByRules({ ...game, rounds: game.rounds.slice(0, -1) });
+}
+
+/** Lässt sich eine beendete Partie weiterspielen? Nein, wenn keine weitere Runde möglich ist. */
+export function canResume(game: Game): boolean {
+  const end = game.settings.end;
+  if (end.type === 'allModes') return game.participants.some((p) => openCoiffeurModes(game, p.id).length > 0);
+  if (end.type === 'lastStanding') return alive(game).length > 1;
+  return true;
+}
+
 /** Teilnehmer, die noch Leben haben. */
 export function alive(game: Game): Participant[] {
   const t = totals(game);

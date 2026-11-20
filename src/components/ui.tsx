@@ -47,17 +47,41 @@ function useKeyboardOverlap(container: RefObject<ViewRef | null>): number {
   return overlap;
 }
 
+/** Ist die Tastatur gerade sichtbar? */
+function useKeyboardVisible(): boolean {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const ios = Platform.OS === 'ios';
+    const show = Keyboard.addListener(ios ? 'keyboardWillShow' : 'keyboardDidShow', () => setVisible(true));
+    const hide = Keyboard.addListener(ios ? 'keyboardWillHide' : 'keyboardDidHide', () => setVisible(false));
+    return () => {
+      show.remove();
+      hide.remove();
+    };
+  }, []);
+  return visible;
+}
+
 export function Screen({ children, footer }: { children: ReactNode; footer?: ReactNode }) {
   const styles = useUi();
   const width = useContentWidth();
   const container = useRef<ViewRef>(null);
   const overlap = useKeyboardOverlap(container);
+  const keyboard = useKeyboardVisible();
   return (
     <View ref={container} style={[styles.screen, { paddingBottom: overlap }]} collapsable={false}>
       <SafeAreaView style={styles.screen} edges={overlap > 0 ? ['left', 'right'] : ['bottom', 'left', 'right']}>
         <ScrollView contentContainerStyle={[styles.content, width]} keyboardShouldPersistTaps="handled">
           {children}
         </ScrollView>
+        {keyboard ? (
+          // Die Zahlentastatur verdeckt Hinweise und Summen unter den Feldern und hat keine eigene Taste zum Schliessen.
+          <View style={[styles.keyboardBar, width]}>
+            <Pressable onPress={Keyboard.dismiss} hitSlop={8} accessibilityRole="button" style={({ pressed }) => pressed && { opacity: 0.6 }}>
+              <Text style={styles.keyboardBarText}>Tastatur ausblenden</Text>
+            </Pressable>
+          </View>
+        ) : null}
         {footer ? <View style={[styles.footer, width]}>{footer}</View> : null}
       </SafeAreaView>
     </View>
@@ -183,6 +207,7 @@ export function NumberField({
       placeholder={placeholder}
       placeholderTextColor="#a3a8a4"
       selectTextOnFocus
+      returnKeyType="done"
       style={[styles.number, { width: width * k }]}
     />
   );
@@ -216,6 +241,8 @@ const baseStyles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: Colors.background },
   content: { padding: Space.screen, gap: Space.gap, paddingBottom: 32 },
   footer: { paddingHorizontal: Space.screen, paddingTop: 8, paddingBottom: 12, gap: 10 },
+  keyboardBar: { flexDirection: 'row', justifyContent: 'flex-end', paddingHorizontal: Space.screen, paddingTop: 8 },
+  keyboardBarText: { fontSize: 15, fontWeight: '700', color: Colors.primary },
   titleBox: { gap: 2, marginBottom: 4 },
   title: { fontSize: 28, fontWeight: '800', color: Colors.ink, letterSpacing: -0.4 },
   sub: { fontSize: 14, color: Colors.muted },

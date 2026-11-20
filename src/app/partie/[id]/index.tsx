@@ -7,9 +7,9 @@ import { GameGuide } from '@/components/GameGuide';
 import { Avatar, Button, Card, Label, Screen, Title, useUi } from '@/components/ui';
 import { useLayout, useScaledStyles } from '@/constants/layout';
 import { Colors } from '@/constants/theme';
-import { createGame, deleteLastRound, finishGame } from '@/data/db';
+import { createGame, deleteLastRound, finishGame, reopenGame } from '@/data/db';
 import { useGame } from '@/data/hooks';
-import { alive, ranking, scoreTable, totals } from '@/domain/scoring';
+import { alive, canResume, ranking, scoreTable, totals } from '@/domain/scoring';
 import { winnerText } from '@/domain/summary';
 import { getTemplate } from '@/domain/templates';
 import type { Game } from '@/domain/types';
@@ -30,6 +30,11 @@ export default function ScoreboardScreen() {
 
   async function endGame() {
     await finishGame(db, game!.id);
+    await reload();
+  }
+
+  async function resume() {
+    await reopenGame(db, game!.id);
     await reload();
   }
 
@@ -55,7 +60,16 @@ export default function ScoreboardScreen() {
   const footer = finished ? (
     <>
       <Button title="Revanche" onPress={rematch} />
-      <Button title="Fertig" variant="secondary" onPress={() => router.dismissTo('/')} />
+      <View style={s.footerRow}>
+        {canResume(game) ? (
+          <View style={{ flex: 1 }}>
+            <Button title="Weiterspielen" variant="secondary" onPress={resume} />
+          </View>
+        ) : null}
+        <View style={{ flex: 1 }}>
+          <Button title="Fertig" variant="secondary" onPress={() => router.dismissTo('/')} />
+        </View>
+      </View>
     </>
   ) : (
     <>
@@ -271,6 +285,7 @@ const sBase = StyleSheet.create({
   winnerText: { fontSize: 26, fontWeight: '800', color: '#fff', textAlign: 'center' },
   rank: { width: 20, fontWeight: '800', color: Colors.muted, fontSize: 16 },
   rankTotal: { fontWeight: '800', fontSize: 18, color: Colors.ink },
+  footerRow: { flexDirection: 'row', gap: 10 },
   undo: { alignSelf: 'center', padding: 8 },
   undoText: { color: Colors.danger, fontWeight: '600', fontSize: 15 },
   rankList: { backgroundColor: Colors.surface, borderRadius: 16, paddingVertical: 4 },

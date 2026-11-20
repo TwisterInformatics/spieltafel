@@ -153,6 +153,11 @@ export async function finishGame(db: SQLiteDatabase, gameId: string): Promise<vo
   await db.runAsync('UPDATE games SET finished_at = ? WHERE id = ? AND finished_at IS NULL', Date.now(), gameId);
 }
 
+/** Beendete Partie wieder aufnehmen. Die Runden bleiben erhalten. */
+export async function reopenGame(db: SQLiteDatabase, gameId: string): Promise<void> {
+  await db.runAsync('UPDATE games SET finished_at = NULL WHERE id = ?', gameId);
+}
+
 export async function deleteGame(db: SQLiteDatabase, gameId: string): Promise<void> {
   await db.withTransactionAsync(async () => {
     await db.runAsync('DELETE FROM rounds WHERE game_id = ?', gameId);

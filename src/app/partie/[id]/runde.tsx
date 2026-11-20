@@ -10,7 +10,7 @@ import { addRound, finishGame, getGame } from '@/data/db';
 import { useGame } from '@/data/hooks';
 import {
   alive,
-  isFinishedByRules,
+  endsWithLastRound,
   JASS_MATCH,
   jassCounterPoints,
   openCoiffeurModes,
@@ -112,7 +112,7 @@ function RoundForm({ game }: { game: Game }) {
     setSaving(true);
     await addRound(db, game.id, data);
     const updated = await getGame(db, game.id);
-    if (updated && isFinishedByRules(updated)) await finishGame(db, game.id);
+    if (updated && endsWithLastRound(updated)) await finishGame(db, game.id);
     router.back();
   }
 

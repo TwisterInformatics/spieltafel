@@ -2,6 +2,8 @@ import { describe, expect, it } from '@jest/globals';
 
 import { COIFFEUR_MODES, searchTemplates, TEMPLATES } from '../templates';
 import {
+  canResume,
+  endsWithLastRound,
   isFinishedByRules,
   jassCounterPoints,
   openCoiffeurModes,
@@ -135,5 +137,32 @@ describe('Suche', () => {
     expect(searchTemplates('zahlen').map((t) => t.id)).toEqual(['frei']);
     expect(searchTemplates('').length).toBe(TEMPLATES.length);
     expect(searchTemplates('', 'Legespiel').map((t) => t.id)).toEqual(['qwirkle']);
+  });
+});
+
+describe('Partie wieder aufnehmen', () => {
+  const target = { winner: 'highest' as const, end: { type: 'target' as const, target: 100 } };
+  const round = (a: number, b: number) => ({ kind: 'rounds' as const, scores: { a, b, c: 0 } });
+
+  it('beendet die Partie mit der Runde, die das Ziel erreicht', () => {
+    expect(endsWithLastRound(game({ settings: target, rounds: [round(60, 10)] }))).toBe(false);
+    expect(endsWithLastRound(game({ settings: target, rounds: [round(60, 10), round(50, 10)] }))).toBe(true);
+  });
+  it('beendet eine weitergespielte Partie nicht nach jeder Runde neu', () => {
+    const rounds = [round(60, 10), round(50, 10), round(5, 5)];
+    expect(isFinishedByRules(game({ settings: target, rounds }))).toBe(true);
+    expect(endsWithLastRound(game({ settings: target, rounds }))).toBe(false);
+  });
+  it('ohne Runden ist nichts beendet', () => {
+    expect(endsWithLastRound(game({ settings: target }))).toBe(false);
+  });
+  it('lässt Partien mit Punkten immer weiterspielen', () => {
+    expect(canResume(game({ settings: target, rounds: [round(120, 0)] }))).toBe(true);
+    expect(canResume(game({ rounds: [round(1, 2)] }))).toBe(true);
+  });
+  it('lässt Partien mit Leben nur weiterspielen, solange zwei im Spiel sind', () => {
+    const settings = { winner: 'highest' as const, end: { type: 'lastStanding' as const, lives: 1 } };
+    expect(canResume(game({ settings, rounds: [{ kind: 'lives', losers: ['a'] }] }))).toBe(true);
+    expect(canResume(game({ settings, rounds: [{ kind: 'lives', losers: ['a', 'b'] }] }))).toBe(false);
   });
 });
