@@ -1,0 +1,529 @@
+[
+  {
+    "id": "skyjo",
+    "name": "Skyjo",
+    "category": "Kartenspiel",
+    "description": "2 bis 8 Spieler · tiefste Summe gewinnt",
+    "keywords": [
+      "skyjo",
+      "karten",
+      "magilano"
+    ],
+    "color": "#3a7bd5",
+    "players": "2 bis 8 Spieler",
+    "winner": "Tiefste Summe gewinnt",
+    "end": "Ende bei 100 Punkten (einstellbar)",
+    "modes": [],
+    "guide": [
+      "Jeder legt 12 verdeckte Karten im Raster 3 × 4 vor sich und deckt zu Beginn zwei davon auf.",
+      "Reihum eine Karte vom Stapel oder Ablagestapel nehmen und gegen eine eigene tauschen, oder sie ablegen und eine eigene Karte aufdecken.",
+      "Drei gleiche offene Karten in einer Spalte werden abgelegt.",
+      "Hat jemand alle Karten offen, spielen die anderen noch einen Zug. Dann zählt jeder seine Karten.",
+      "Wer die Runde beendet, aber nicht allein am wenigsten hat, zählt doppelt. Ab 100 Punkten ist Schluss, wenig gewinnt."
+    ],
+    "rules": {
+      "url": "https://de.wikipedia.org/wiki/Skyjo",
+      "source": "Wikipedia"
+    },
+    "upcoming": false
+  },
+  {
+    "id": "jass-schieber",
+    "name": "Jass Schieber",
+    "category": "Kartenspiel",
+    "description": "2 Teams · Zielpunkte erreichen",
+    "keywords": [
+      "jass",
+      "schieber",
+      "jassen",
+      "karten",
+      "schweiz"
+    ],
+    "color": "#1f6f4a",
+    "players": "2 Teams zu 2",
+    "winner": "Höchste Summe gewinnt",
+    "end": "Ziel: 2500 Punkte (einstellbar)",
+    "modes": [
+      {
+        "name": "Eicheln",
+        "factor": 1
+      },
+      {
+        "name": "Schellen",
+        "factor": 1
+      },
+      {
+        "name": "Rosen",
+        "factor": 2
+      },
+      {
+        "name": "Schilten",
+        "factor": 2
+      },
+      {
+        "name": "Obenabe",
+        "factor": 3
+      },
+      {
+        "name": "Undenufe",
+        "factor": 3
+      }
+    ],
+    "guide": [
+      "Zwei Teams zu zweit, Partner sitzen sich gegenüber. 36 Jasskarten, jeder bekommt 9.",
+      "Wer ansagt, wählt Trumpf, Obenabe oder Undenufe, oder schiebt die Wahl zum Partner.",
+      "Angespielte Farbe muss man angeben, Trumpf darf man immer spielen.",
+      "Pro Spiel gibt es 157 Punkte, alle Stiche sind ein Match mit 257. Dazu kommen Weis und Stöck.",
+      "Die App rechnet mit dem Faktor der Trumpfart. Wer zuerst die Zielpunkte hat, gewinnt."
+    ],
+    "rules": {
+      "url": "https://www.pagat.com/de/jass/schieber.html",
+      "source": "Pagat"
+    },
+    "upcoming": false
+  },
+  {
+    "id": "jass-differenzler",
+    "name": "Jass Differenzler",
+    "category": "Kartenspiel",
+    "description": "4 Spieler · Ansage treffen, tiefste Differenz gewinnt",
+    "keywords": [
+      "jass",
+      "differenzler",
+      "jassen",
+      "karten",
+      "schweiz"
+    ],
+    "color": "#1f6f4a",
+    "players": "4 Spieler",
+    "winner": "Tiefste Summe gewinnt",
+    "end": "12 Runden (einstellbar)",
+    "modes": [],
+    "guide": [
+      "Vier Spieler, jeder für sich. Jeder bekommt 9 Jasskarten.",
+      "Vor dem Spiel sagt jeder geheim an, wie viele Punkte er machen wird.",
+      "Nach dem Spiel ist die Differenz zwischen Ansage und erzielten Punkten der Strafwert.",
+      "Zusammen gibt es pro Spiel 157 Punkte.",
+      "Wer nach allen Runden die wenigsten Strafpunkte hat, gewinnt."
+    ],
+    "rules": {
+      "url": "https://www.pagat.com/jass/differenzler.html",
+      "source": "Pagat (englisch)"
+    },
+    "upcoming": false
+  },
+  {
+    "id": "jass-coiffeur",
+    "name": "Jass Coiffeur",
+    "category": "Kartenspiel",
+    "description": "2 Teams · jede Spielart einmal",
+    "keywords": [
+      "jass",
+      "coiffeur",
+      "jassen",
+      "karten",
+      "schweiz"
+    ],
+    "color": "#1f6f4a",
+    "players": "2 Teams zu 2",
+    "winner": "Höchste Summe gewinnt",
+    "end": "Ende, wenn alle Spielarten gespielt sind",
+    "modes": [
+      {
+        "name": "Eicheln",
+        "factor": 1
+      },
+      {
+        "name": "Schellen",
+        "factor": 2
+      },
+      {
+        "name": "Rosen",
+        "factor": 3
+      },
+      {
+        "name": "Schilten",
+        "factor": 4
+      },
+      {
+        "name": "Obenabe",
+        "factor": 5
+      },
+      {
+        "name": "Undenufe",
+        "factor": 6
+      }
+    ],
+    "guide": [
+      "Zwei Teams zu zweit, gespielt wird wie beim Schieber.",
+      "Jedes Team muss jede Spielart genau einmal ansagen. Jede Spielart hat einen eigenen Faktor.",
+      "Es zählen nur die Punkte des Teams, das angesagt hat, mal dem Faktor.",
+      "Sind alle Spielarten gespielt, gewinnt das Team mit mehr Punkten."
+    ],
+    "rules": {
+      "url": "https://www.pagat.com/de/jass/coiffeur.html",
+      "source": "Pagat"
+    },
+    "upcoming": false
+  },
+  {
+    "id": "tschau-sepp",
+    "name": "Tschau Sepp",
+    "category": "Kartenspiel",
+    "description": "2 bis 8 Spieler · Restkarten zählen, wenig gewinnt",
+    "keywords": [
+      "tschau",
+      "sepp",
+      "mau",
+      "maumau",
+      "jasskarten",
+      "karten",
+      "schweiz"
+    ],
+    "color": "#c0563b",
+    "players": "2 bis 8 Spieler",
+    "winner": "Tiefste Summe gewinnt",
+    "end": "Ende, wann ihr wollt",
+    "modes": [],
+    "guide": [
+      "Mit 36 Jasskarten, jeder bekommt 5 Karten. Eine Karte liegt offen, der Rest ist der Stapel.",
+      "Reihum eine Karte gleicher Farbe oder gleichen Werts ablegen. Wer nicht kann oder will, zieht eine Karte.",
+      "Sonderkarten nach Hausregel, oft: 7 heisst zwei ziehen, 8 aussetzen, Bube wünscht eine Farbe.",
+      "Bei der vorletzten Karte «Tschau» rufen, bei der letzten «Sepp». Wer es vergisst, zieht Strafkarten.",
+      "In der App: Wer fertig ist, bekommt 0. Die anderen zählen ihre Restkarten. Wenig gewinnt."
+    ],
+    "rules": {
+      "url": "https://de.wikipedia.org/wiki/Tschau_Sepp",
+      "source": "Wikipedia"
+    },
+    "upcoming": false
+  },
+  {
+    "id": "arschloechle",
+    "name": "Arschlöchle",
+    "category": "Kartenspiel",
+    "description": "ab 3 Spielern · König sammelt Punkte",
+    "keywords": [
+      "arschlöchle",
+      "arschloch",
+      "präsident",
+      "president",
+      "könig",
+      "karten"
+    ],
+    "color": "#8a5cc2",
+    "players": "ab 3 Spielern",
+    "winner": "Höchste Summe gewinnt",
+    "end": "Ende, wann ihr wollt",
+    "modes": [],
+    "guide": [
+      "Alle Karten werden verteilt. Wer anspielt, legt eine Karte oder mehrere gleiche.",
+      "Der Nächste legt gleich viele Karten mit höherem Wert oder passt. Passen alle, spielt der Letzte neu an.",
+      "Wer zuerst keine Karten mehr hat, wird König, der Letzte ist das Arschlöchle.",
+      "In der nächsten Runde gibt das Arschlöchle dem König seine besten Karten und bekommt die schlechtesten.",
+      "In der App: Spieler in der Reihenfolge antippen, in der sie fertig wurden. Der König bekommt so viele Punkte, wie er Mitspieler hat, jeder Platz danach einen weniger, das Arschlöchle 0."
+    ],
+    "rules": {
+      "url": "https://de.wikipedia.org/wiki/Arschloch_(Kartenspiel)",
+      "source": "Wikipedia"
+    },
+    "upcoming": false
+  },
+  {
+    "id": "gaemsch",
+    "name": "Gämsch",
+    "category": "Kartenspiel",
+    "description": "2 bis 4 Teams · Punkte pro Gämsch",
+    "keywords": [
+      "gämsch",
+      "gemsch",
+      "gämsh",
+      "teams",
+      "jasskarten",
+      "karten",
+      "schweiz"
+    ],
+    "color": "#2a9d8f",
+    "players": "2 bis 4 Spieler",
+    "winner": "Höchste Summe gewinnt",
+    "end": "Ende, wann ihr wollt",
+    "modes": [],
+    "guide": [
+      "Immer zwei spielen zusammen und sitzen sich gegenüber. Jedes Team macht ein geheimes Zeichen ab.",
+      "Jeder hat 4 Karten, 4 weitere liegen offen in der Mitte. Alle tauschen gleichzeitig mit der Mitte.",
+      "Ziel sind vier gleiche Karten, zum Beispiel alle Achter. Dann das Zeichen geben, der Partner ruft «Gämsch!».",
+      "Merkt das andere Team es zuerst, ruft es «Gegen-Gämsch!» und holt den Punkt.",
+      "Üblich: Gämsch 1 Punkt, Doppel-Gämsch 2, falscher Ruf 1 für die Gegner, erratenes Zeichen 2. In der App pro Team einen Namen eintragen."
+    ],
+    "rules": {
+      "url": "https://de.wikipedia.org/wiki/G%C3%A4msch",
+      "source": "Wikipedia"
+    },
+    "upcoming": false
+  },
+  {
+    "id": "schwimmen",
+    "name": "Schwimmen (31)",
+    "category": "Kartenspiel",
+    "description": "2 bis 9 Spieler · drei Leben, dann schwimmen",
+    "keywords": [
+      "schwimmen",
+      "31",
+      "einunddreissig",
+      "schnauz",
+      "knack",
+      "karten"
+    ],
+    "color": "#3a7bd5",
+    "players": "2 bis 9 Spieler",
+    "winner": "Wer übrig bleibt, gewinnt",
+    "end": "4 Leben pro Spieler (einstellbar)",
+    "modes": [],
+    "guide": [
+      "Jeder bekommt 3 Karten, 3 weitere liegen offen in der Mitte.",
+      "Reihum eine oder alle Karten mit der Mitte tauschen, schieben oder klopfen.",
+      "Gezählt werden Karten einer Farbe: Ass 11, Bilder 10, Zahlen ihren Wert, höchstens 31. Drei gleiche zählen 30½.",
+      "Nach dem Klopfen hat jeder noch einen Zug. Wer am wenigsten hat, verliert ein Leben.",
+      "In der App tippt ihr an, wer ein Leben verliert. Jeder startet mit 4 Leben: 3 plus einmal schwimmen. Wer keine mehr hat, ist draussen, der Letzte im Spiel gewinnt."
+    ],
+    "rules": {
+      "url": "https://de.wikipedia.org/wiki/Schwimmen_(Kartenspiel)",
+      "source": "Wikipedia"
+    },
+    "upcoming": false
+  },
+  {
+    "id": "romme",
+    "name": "Rommé",
+    "category": "Kartenspiel",
+    "description": "2 bis 6 Spieler · Minuspunkte, wenig gewinnt",
+    "keywords": [
+      "romme",
+      "rommé",
+      "rummy",
+      "joker",
+      "karten"
+    ],
+    "color": "#d4567f",
+    "players": "2 bis 6 Spieler",
+    "winner": "Tiefste Summe gewinnt",
+    "end": "Ende, wann ihr wollt",
+    "modes": [],
+    "guide": [
+      "Gespielt wird mit zwei Kartenspielen samt Jokern.",
+      "Ziel ist, Sätze aus 3 oder 4 gleichen Karten und Reihen aus 3 oder mehr Karten einer Farbe auszulegen.",
+      "Pro Zug eine Karte ziehen und am Ende eine ablegen. Für das erste Auslegen braucht man meist 40 Punkte.",
+      "Wer zuerst alle Karten los ist, beendet die Runde. Die anderen zählen ihre Restkarten, ein Joker zählt 20.",
+      "Die Restpunkte werden addiert. Wenig gewinnt."
+    ],
+    "rules": {
+      "url": "https://de.wikipedia.org/wiki/Romm%C3%A9",
+      "source": "Wikipedia"
+    },
+    "upcoming": false
+  },
+  {
+    "id": "stiche-ansagen",
+    "name": "Stiche ansagen",
+    "category": "Kartenspiel",
+    "description": "3 bis 7 Spieler · Ansage treffen gibt Punkte",
+    "keywords": [
+      "stiche",
+      "ansagen",
+      "oh hell",
+      "wizard",
+      "karten"
+    ],
+    "color": "#1d2420",
+    "players": "3 bis 7 Spieler",
+    "winner": "Höchste Summe gewinnt",
+    "end": "Ende, wann ihr wollt",
+    "modes": [],
+    "guide": [
+      "In jeder Runde gibt es eine andere Anzahl Karten, zum Beispiel 1, dann 2, dann 3 und so weiter.",
+      "Eine Karte wird aufgedeckt und bestimmt Trumpf. Dann sagt jeder an, wie viele Stiche er machen wird.",
+      "Angespielte Farbe muss man angeben. Die höchste Karte oder der höchste Trumpf gewinnt den Stich.",
+      "Häufige Wertung: Ansage genau getroffen gibt 10 Punkte plus 1 pro Stich, sonst nur 1 pro Stich.",
+      "Wer am Schluss die meisten Punkte hat, gewinnt."
+    ],
+    "rules": {
+      "url": "https://www.pagat.com/exact/ohhell.html",
+      "source": "Pagat (englisch)"
+    },
+    "upcoming": false
+  },
+  {
+    "id": "uno",
+    "name": "Uno",
+    "category": "Kartenspiel",
+    "description": "2 bis 10 Spieler · wer 500 erreicht, verliert",
+    "keywords": [
+      "uno",
+      "karten",
+      "familie",
+      "kinder"
+    ],
+    "color": "#c0563b",
+    "players": "2 bis 10 Spieler",
+    "winner": "Tiefste Summe gewinnt",
+    "end": "Ende bei 500 Punkten (einstellbar)",
+    "modes": [],
+    "guide": [
+      "Jeder bekommt 7 Karten. Man legt eine Karte gleicher Farbe, gleicher Zahl oder mit gleichem Symbol, sonst zieht man.",
+      "Aussetzen, Richtungswechsel und Zieh 2 wirken auf den Nächsten. Farbwahl und Zieh 4 darf man immer legen.",
+      "Bei der zweitletzten Karte ruft man «Uno».",
+      "Ist jemand fertig, zählen die anderen ihre Handkarten: Zahlen nach Wert, Aktionskarten 20, Farbwahlkarten 50.",
+      "Wer 500 Punkte erreicht, hat verloren. Es gewinnt, wer am wenigsten hat."
+    ],
+    "rules": {
+      "url": "https://de.wikipedia.org/wiki/Uno_(Kartenspiel)",
+      "source": "Wikipedia"
+    },
+    "upcoming": true
+  },
+  {
+    "id": "phase-10",
+    "name": "Phase 10",
+    "category": "Kartenspiel",
+    "description": "2 bis 6 Spieler · Strafpunkte, wenig gewinnt",
+    "keywords": [
+      "phase",
+      "phase 10",
+      "phasen",
+      "karten",
+      "familie"
+    ],
+    "color": "#8a5cc2",
+    "players": "2 bis 6 Spieler",
+    "winner": "Tiefste Summe gewinnt",
+    "end": "Ende, wann ihr wollt",
+    "modes": [],
+    "guide": [
+      "Jeder bekommt 10 Karten. Wer dran ist, zieht eine Karte und legt eine ab.",
+      "Hat man die Karten für seine Phase, zum Beispiel zwei Drillinge, legt man sie aus und darf danach bei allen Phasen anlegen.",
+      "Wer alle Karten los ist, beendet die Runde. Wer seine Phase geschafft hat, spielt nächste Runde die nächste.",
+      "Die anderen zählen ihre Handkarten: 1 bis 9 je 5 Punkte, 10 bis 12 je 10, Aussetzen 15, Joker 25.",
+      "Wer zuerst Phase 10 schafft, gewinnt, bei Gleichstand der mit weniger Punkten. Die Phasen merkt ihr euch selbst."
+    ],
+    "rules": {
+      "url": "https://de.wikipedia.org/wiki/Phase_10",
+      "source": "Wikipedia"
+    },
+    "upcoming": true
+  },
+  {
+    "id": "wizard",
+    "name": "Wizard",
+    "category": "Kartenspiel",
+    "description": "3 bis 6 Spieler · Stiche richtig vorhersagen",
+    "keywords": [
+      "wizard",
+      "stiche",
+      "ansage",
+      "zauberer",
+      "karten"
+    ],
+    "color": "#3b4a8f",
+    "players": "3 bis 6 Spieler",
+    "winner": "Höchste Summe gewinnt",
+    "end": "Runden nach Anzahl Karten (60 geteilt durch Spieler)",
+    "modes": [],
+    "guide": [
+      "In Runde 1 bekommt jeder 1 Karte, in Runde 2 zwei Karten und so weiter. Die nächste Karte bestimmt Trumpf.",
+      "Jeder sagt an, wie viele Stiche er machen wird.",
+      "Farbe muss angegeben werden. Der erste Zauberer gewinnt den Stich immer, ein Narr nie.",
+      "In der App Ansage und Stiche eintragen. Getroffen gibt 20 plus 10 je Stich, daneben 10 Abzug je Stich Unterschied.",
+      "Es gibt so viele Runden, wie die 60 Karten reichen, bei 4 Spielern also 15. Am meisten Punkte gewinnt."
+    ],
+    "rules": {
+      "url": "https://de.wikipedia.org/wiki/Wizard_(Spiel)",
+      "source": "Wikipedia"
+    },
+    "upcoming": true
+  },
+  {
+    "id": "qwirkle",
+    "name": "Qwirkle",
+    "category": "Legespiel",
+    "description": "2 bis 8 Spieler · höchste Summe gewinnt",
+    "keywords": [
+      "qwirkle",
+      "lege",
+      "steine"
+    ],
+    "color": "#e0a526",
+    "players": "2 bis 8 Spieler",
+    "winner": "Höchste Summe gewinnt",
+    "end": "Ende, wann ihr wollt",
+    "modes": [],
+    "guide": [
+      "Jeder hat 6 Steine. Reihum legt man Steine in eine Reihe, die alle dieselbe Farbe oder dieselbe Form haben, ohne doppelte.",
+      "Jeder Stein in jeder Reihe, die man bildet oder verlängert, zählt einen Punkt.",
+      "Eine vollständige Reihe aus 6 Steinen ist ein Qwirkle und bringt 6 Extrapunkte.",
+      "Statt zu legen darf man Steine tauschen. Danach wieder auf 6 Steine auffüllen.",
+      "Wer zuerst alle Steine gelegt hat, wenn der Beutel leer ist, bekommt 6 Bonuspunkte."
+    ],
+    "rules": {
+      "url": "https://www.schmidtspiele.de/files/Produkte/4/49014%20-%20Qwirkle/49014_Qwirkle_DE-FR-IT.pdf",
+      "source": "Schmidt Spiele (PDF)"
+    },
+    "upcoming": false
+  },
+  {
+    "id": "maexle",
+    "name": "Mäxle",
+    "category": "Würfelspiel",
+    "description": "2 oder mehr Spieler · bluffen, Leben verlieren",
+    "keywords": [
+      "mäxle",
+      "mäxchen",
+      "meiern",
+      "würfel",
+      "bluff",
+      "leben"
+    ],
+    "color": "#e0a526",
+    "players": "ab 2 Spielern",
+    "winner": "Wer übrig bleibt, gewinnt",
+    "end": "6 Leben pro Spieler (einstellbar)",
+    "modes": [],
+    "guide": [
+      "Man würfelt verdeckt mit zwei Würfeln im Becher. Die höhere Zahl ist der Zehner: 3 und 5 ist 53.",
+      "Pasche (zwei Gleiche) sind höher, am höchsten ist 21, das Mäxle.",
+      "Man sagt einen höheren Wurf an als der Vorgänger und gibt den Becher weiter. Die Ansage darf gelogen sein.",
+      "Der Nächste glaubt und würfelt selbst, oder er deckt auf. Wer falsch lag, verliert ein Leben: der Lügner oder der Zweifler.",
+      "In der App tippt ihr an, wer ein Leben verliert. Jeder startet mit 6 Leben, der Letzte im Spiel gewinnt."
+    ],
+    "rules": {
+      "url": "https://de.wikipedia.org/wiki/M%C3%A4xchen",
+      "source": "Wikipedia"
+    },
+    "upcoming": true
+  },
+  {
+    "id": "frei",
+    "name": "Freie Zählung",
+    "category": "Frei",
+    "description": "Ohne Spielregeln · beliebig viele Spieler",
+    "keywords": [
+      "frei",
+      "punkte",
+      "zählen",
+      "block",
+      "beliebig"
+    ],
+    "color": "#6b726d",
+    "players": "ab 1 Spieler",
+    "winner": "Höchste oder tiefste Summe gewinnt, wählbar",
+    "end": "Ende, wann ihr wollt",
+    "modes": [],
+    "guide": [
+      "Für jedes Spiel mit Punkten, das hier nicht aufgeführt ist.",
+      "Pro Runde trägt man für jeden die Punkte ein, Minuszahlen sind erlaubt.",
+      "Beim Start wählt ihr, ob die höchste oder die tiefste Summe gewinnt.",
+      "Beendet die Partie, wann ihr wollt."
+    ],
+    "rules": null,
+    "upcoming": false
+  }
+]
