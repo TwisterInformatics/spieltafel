@@ -37,7 +37,7 @@ function spieltreff_pillars() {
 		array(
 			'icon'  => '🪑',
 			'title' => __( 'Einfach hingehen', 'spieltafel' ),
-			'text'  => __( 'Anfänger sind willkommen. Niemand muss alle Regeln kennen, man lernt sie am besten am Tisch.', 'spieltafel' ),
+			'text'  => __( 'Niemand muss alle Regeln kennen, man lernt sie am besten am Tisch. Wo Neue besonders willkommen sind, steht beim Eintrag «Anfänger willkommen», und du kannst gezielt danach filtern.', 'spieltafel' ),
 		),
 	);
 }
