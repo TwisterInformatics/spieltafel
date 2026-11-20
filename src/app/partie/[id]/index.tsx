@@ -187,8 +187,8 @@ function Progress({ game }: { game: Game }) {
     const pct = Math.min(1, t[top.id] / end.target);
     return (
       <Card style={{ flexDirection: 'column', alignItems: 'stretch', gap: 8 }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: 8 }}>
-          <Text style={[ui.cardTitle, s.progressTitle]}>{`${top.name} ${verb(top.name, 'ist', 'sind')} am nächsten an ${end.target}`}</Text>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
+          <Text style={[ui.cardTitle, { flex: 1 }]}>{`${top.name} ${verb(top.name, 'ist', 'sind')} am nächsten an ${end.target}`}</Text>
           <Text style={s.progressValue}>{t[top.id]}</Text>
         </View>
         <View style={s.bar}>
@@ -265,8 +265,6 @@ const sBase = StyleSheet.create({
   bar: { height: 10, borderRadius: 5, backgroundColor: '#e6e2d8', overflow: 'hidden' },
   barFill: { height: 10, backgroundColor: Colors.danger },
   winner: { backgroundColor: Colors.primary, borderRadius: 22, paddingVertical: 28, paddingHorizontal: 20, alignItems: 'center', gap: 10 },
-  // Lange Namen umbrechen, statt die Punktzahl aus der Karte zu schieben.
-  progressTitle: { flex: 1 },
   progressValue: { fontWeight: '700', color: Colors.primary, fontSize: 16 },
   winnerSub: { color: Colors.primaryLight, fontSize: 14 },
   crownText: { fontSize: 30, fontWeight: '800', color: Colors.ink },

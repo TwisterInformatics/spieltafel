@@ -127,7 +127,7 @@ export default function NewGameScreen() {
       {template.end.type === 'target' ? (
         <Card style={s.setting}>
           <Text style={s.settingText}>Spielende bei</Text>
-          <NumberField value={target} onChange={setTarget} width={100} />
+          <NumberField value={target} onChange={setTarget} width={100} allowNegative={false} />
         </Card>
       ) : null}
       {template.end.type === 'rounds' && deckRounds !== null ? (
@@ -145,7 +145,7 @@ export default function NewGameScreen() {
       {template.end.type === 'rounds' && deckRounds === null ? (
         <Card style={s.setting}>
           <Text style={s.settingText}>Anzahl Runden</Text>
-          <NumberField value={rounds} onChange={setRounds} width={100} />
+          <NumberField value={rounds} onChange={setRounds} width={100} allowNegative={false} />
         </Card>
       ) : null}
       {template.end.type === 'manual' ? (

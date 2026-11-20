@@ -16,7 +16,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { keyboardOverlap, useLayout, useScaledStyles } from '@/constants/layout';
 import { Colors, Radius, Space } from '@/constants/theme';
 
-import { formatNumberInput, parseNumberInput } from './numberInput';
+import { formatNumberInput, parseNumberInput, toggleSign } from './numberInput';
 
 // Android: "numeric" ist die Zahlentastatur mit Minus-Taste.
 // iOS: Die Zahlentastatur hat kein Minus, darum die Tastatur mit Zahlen und Satzzeichen.
@@ -154,11 +154,14 @@ export function NumberField({
   onChange,
   width = 84,
   placeholder = '0',
+  allowNegative = true,
 }: {
   value: number | null;
   onChange: (v: number | null) => void;
   width?: number;
   placeholder?: string;
+  /** Zeigt eine ±-Taste. Viele Android-Tastaturen (z.B. Samsung) haben im Zahlenfeld kein Minus. */
+  allowNegative?: boolean;
 }) {
   const styles = useUi();
   const { k } = useLayout();
@@ -168,20 +171,35 @@ export function NumberField({
     // Wert von aussen geändert (z.B. Formular zurückgesetzt): Feld nachziehen.
     setText((current) => (parseNumberInput(current).value === value ? current : formatNumberInput(value)));
   }, [value]);
-  return (
+  const apply = (parsed: { text: string; value: number | null }) => {
+    setText(parsed.text);
+    onChange(parsed.value);
+  };
+  const input = (
     <TextInput
       value={text}
-      onChangeText={(t) => {
-        const parsed = parseNumberInput(t);
-        setText(parsed.text);
-        onChange(parsed.value);
-      }}
+      onChangeText={(t) => apply(parseNumberInput(t))}
       keyboardType={NUMBER_KEYBOARD}
       placeholder={placeholder}
       placeholderTextColor="#a3a8a4"
       selectTextOnFocus
       style={[styles.number, { width: width * k }]}
     />
+  );
+  if (!allowNegative) return input;
+  const negative = text.startsWith('-');
+  return (
+    <View style={styles.numberRow}>
+      <Pressable
+        onPress={() => apply(toggleSign(text))}
+        hitSlop={6}
+        accessibilityRole="button"
+        accessibilityLabel={negative ? 'Positiv machen' : 'Negativ machen'}
+        style={({ pressed }) => [styles.signButton, negative && styles.signButtonActive, pressed && { opacity: 0.7 }]}>
+        <Text style={[styles.signText, negative && styles.signTextActive]}>±</Text>
+      </Pressable>
+      {input}
+    </View>
   );
 }
 
@@ -233,6 +251,18 @@ const baseStyles = StyleSheet.create({
     fontWeight: '700',
     color: Colors.ink,
   },
+  numberRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  signButton: {
+    width: 38,
+    height: 46,
+    borderRadius: Radius.input,
+    backgroundColor: Colors.surfaceMuted,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  signButtonActive: { backgroundColor: Colors.primary },
+  signText: { fontSize: 22, fontWeight: '700', color: Colors.primary },
+  signTextActive: { color: '#fff' },
   hint: { backgroundColor: Colors.hintBg, borderRadius: Radius.input, padding: 12 },
   hintText: { fontSize: 13, color: Colors.hintInk, lineHeight: 18 },
   row: { flexDirection: 'row', alignItems: 'center', gap: 8 },

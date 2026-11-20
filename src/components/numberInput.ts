@@ -12,6 +12,12 @@ export function parseNumberInput(input: string): { text: string; value: number |
   return { text, value: Number.isNaN(n) ? null : n };
 }
 
+/** Dreht das Vorzeichen um (für die ±-Taste, weil manche Tastaturen kein Minus haben). */
+export function toggleSign(text: string): { text: string; value: number | null } {
+  const current = parseNumberInput(text).text;
+  return parseNumberInput(current.startsWith('-') ? current.slice(1) : '-' + current);
+}
+
 export function formatNumberInput(value: number | null): string {
   return value === null ? '' : String(value);
 }
