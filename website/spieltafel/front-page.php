@@ -95,7 +95,8 @@ $shots = spieltafel_screenshots();
 </section>
 
 <?php
-get_template_part( 'template-parts/section-wish', null, array( 'alt' => true ) );
+get_template_part( 'template-parts/spieltreff/section-front' );
+get_template_part( 'template-parts/section-wish' );
 
 if ( have_posts() && 'page' === get_option( 'show_on_front' ) ) :
 	while ( have_posts() ) :

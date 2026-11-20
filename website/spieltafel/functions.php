@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'SPIELTAFEL_VERSION', '1.0.0' );
+define( 'SPIELTAFEL_VERSION', '1.1.0' );
 define( 'SPIELTAFEL_DIR', get_template_directory() );
 define( 'SPIELTAFEL_URI', get_template_directory_uri() );
 
@@ -16,6 +16,12 @@ require SPIELTAFEL_DIR . '/inc/content.php';
 require SPIELTAFEL_DIR . '/inc/customizer.php';
 require SPIELTAFEL_DIR . '/inc/wishes.php';
 require SPIELTAFEL_DIR . '/inc/activation.php';
+require SPIELTAFEL_DIR . '/inc/spieltreff/setup.php';
+require SPIELTAFEL_DIR . '/inc/spieltreff/captcha.php';
+require SPIELTAFEL_DIR . '/inc/spieltreff/core.php';
+require SPIELTAFEL_DIR . '/inc/spieltreff/actions.php';
+require SPIELTAFEL_DIR . '/inc/spieltreff/accounts.php';
+require SPIELTAFEL_DIR . '/inc/spieltreff/admin.php';
 
 add_action(
 	'after_setup_theme',
@@ -38,6 +44,7 @@ add_action(
 	function () {
 		wp_enqueue_style( 'spieltafel', get_stylesheet_uri(), array(), SPIELTAFEL_VERSION );
 		wp_enqueue_script( 'spieltafel', SPIELTAFEL_URI . '/assets/js/site.js', array(), SPIELTAFEL_VERSION, array( 'in_footer' => true, 'strategy' => 'defer' ) );
+		wp_enqueue_script( 'spieltafel-spieltreff', SPIELTAFEL_URI . '/assets/js/spieltreff.js', array(), SPIELTAFEL_VERSION, array( 'in_footer' => true, 'strategy' => 'defer' ) );
 	}
 );
 
@@ -79,11 +86,16 @@ function spieltafel_fallback_menu() {
 	$items = array(
 		array( home_url( '/#funktionen' ), __( 'Funktionen', 'spieltafel' ), '' ),
 		array( spieltafel_page_url( 'spiele' ), __( 'Spiele & Anleitungen', 'spieltafel' ), '' ),
+		array( spieltreff_url(), __( 'Spieltreff', 'spieltafel' ), spieltreff_is_live() ? '' : 'nav-soon' ),
 		array( spieltafel_page_url( 'spielwunsch' ), __( 'Spiel wünschen', 'spieltafel' ), 'nav-cta' ),
 	);
+	if ( is_user_logged_in() ) {
+		$items[] = array( spieltreff_url( 'konto' ), __( 'Mein Konto', 'spieltafel' ), 'nav-account' );
+	}
 	echo '<ul>';
 	foreach ( $items as $item ) {
-		printf( '<li class="%s"><a href="%s">%s</a></li>', esc_attr( $item[2] ), esc_url( $item[0] ), esc_html( $item[1] ) );
+		$badge = 'nav-soon' === $item[2] && ! is_user_logged_in() ? ' <span class="badge-soon">' . esc_html__( 'Bald', 'spieltafel' ) . '</span>' : '';
+		printf( '<li class="%s"><a href="%s">%s%s</a></li>', esc_attr( $item[2] ), esc_url( $item[0] ), esc_html( $item[1] ), $badge ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- oben escaped.
 	}
 	echo '</ul>';
 }
@@ -99,6 +111,9 @@ function spieltafel_footer_fallback_menu() {
 		printf( '<li><a href="%s">%s</a></li>', esc_url( get_permalink( $impressum ) ), esc_html__( 'Impressum', 'spieltafel' ) );
 	}
 	printf( '<li><a href="%s">%s</a></li>', esc_url( spieltafel_page_url( 'spielwunsch' ) ), esc_html__( 'Spiel wünschen', 'spieltafel' ) );
+	if ( spieltreff_can_view() ) {
+		printf( '<li><a href="%s">%s</a></li>', esc_url( spieltreff_rules_url() ), esc_html__( 'Spieltreff-Regeln', 'spieltafel' ) );
+	}
 	echo '</ul>';
 }
 

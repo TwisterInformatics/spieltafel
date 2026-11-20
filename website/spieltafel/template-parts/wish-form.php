@@ -61,5 +61,6 @@ $privacy = get_privacy_policy_url();
 			</span>
 		</label>
 	</div>
-	<button class="btn" type="submit"><?php esc_html_e( 'Spiel wünschen', 'spieltafel' ); ?></button>
+	<?php spieltreff_pow_field(); ?>
+	<button class="btn" type="submit" data-needs-pow><?php esc_html_e( 'Spiel wünschen', 'spieltafel' ); ?></button>
 </form>

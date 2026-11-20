@@ -80,6 +80,11 @@ function spieltafel_handle_wish() {
 		exit;
 	}
 
+	// Rechenaufgabe des Browsers (Spamschutz ohne fremde Dienste, siehe inc/spieltreff/captcha.php).
+	if ( function_exists( 'spieltreff_pow_verify' ) && ! spieltreff_pow_verify() ) {
+		$fail( 'captcha' );
+	}
+
 	// Höchstens 5 Wünsche pro Stunde und Adresse. Gespeichert wird nur ein Hash.
 	$ip    = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
 	$key   = 'spieltafel_wish_' . substr( wp_hash( $ip ), 0, 20 );
@@ -170,6 +175,7 @@ function spieltafel_wish_notice() {
 		'danke'      => array( 'ok', __( 'Danke! Dein Spielwunsch ist angekommen.', 'spieltafel' ) ),
 		'fehlt'      => array( 'error', __( 'Bitte gib den Namen des Spiels an und bestätige den Datenschutz-Hinweis.', 'spieltafel' ) ),
 		'abgelaufen' => array( 'error', __( 'Das Formular war zu lange offen. Bitte sende es noch einmal.', 'spieltafel' ) ),
+		'captcha'    => array( 'error', __( 'Der Spamschutz hat nicht geklappt. Bitte warte, bis «Kein Roboter» erscheint, und sende noch einmal.', 'spieltafel' ) ),
 		'zuviel'     => array( 'error', __( 'Danke für die vielen Wünsche! Bitte versuche es in einer Stunde wieder.', 'spieltafel' ) ),
 		'fehler'     => array( 'error', __( 'Das hat leider nicht geklappt. Bitte versuche es später noch einmal.', 'spieltafel' ) ),
 	);

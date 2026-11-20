@@ -9,6 +9,20 @@ Der Ordner `spieltafel/` ist ein klassisches WordPress-Theme für die Webseite z
 - **Eigene Seite pro Spiel** (`/spiele/skyjo/`, `/spiele/jass-schieber/` …), auch in der Sitemap von WordPress.
 - **Spiel wünschen** (`/spiel-wuenschen/`): Formular mit Spielname, Art, Zählweise, Link, Name und E-Mail (freiwillig). Die Wünsche landen im Backend unter **Spielwünsche** und auf Wunsch per E-Mail. Spamschutz mit verstecktem Feld, Mindestzeit und höchstens 5 Wünschen pro Stunde und Adresse.
 
+## Spieltreff: Mitspieler finden
+
+Plattform nur auf der Webseite (`/spieltreff/`), Code in `spieltafel/inc/spieltreff/`.
+
+- **Angebote** mit Datum, Zeit, Ort und Spielen (Auswahl aus der App-Liste plus Freitext), Plätzen, Anmeldeschluss und «Anfänger willkommen».
+- **Gesuche** mit freiem Zeitpunkt («jeden Donnerstag»), laufen nach 90 Tagen ab und lassen sich verlängern.
+- **Anmeldung**: Der Ersteller bestätigt jede Anmeldung (oder wählt sofort definitiv). Sind alle Plätze bestätigt, kommen weitere auf die **Warteliste** und rücken automatisch nach. Option «findet nur statt bei genügend Anmeldungen» mit Mindestanzahl. Absagen informiert alle per E-Mail. Nachricht an alle Angemeldeten, Kalenderdatei (.ics) für Bestätigte.
+- **Datenschutz**: Öffentlich sind nur Anzeigename, PLZ/Ort/Kanton. Genaue Adresse und Kontakt sehen nur Bestätigte, die E-Mail der Teilnehmenden nur der Ersteller. Einträge sind `noindex` und nicht in der Sitemap. Vergangene Einträge werden nach 30 Tagen gelöscht, unbestätigte Konten nach 7 Tagen. Im Konto: Daten als JSON herunterladen, Konto löschen. Angebunden an die Datenschutz-Werkzeuge von WordPress, Textvorschlag für die Datenschutzerklärung.
+- **Konten**: Rolle «Spieler», Registrierung mit Anzeigename, E-Mail, Passwort, Zustimmung zu Regeln und Mindestalter, Bestätigung per E-Mail-Link. Spieler sehen das Backend nicht.
+- **Spamschutz ohne Drittanbieter**: Rechenaufgabe im Browser (Proof of Work nach ALTCHA-Verfahren), verstecktes Feld, Mindestzeit, Begrenzungen pro Adresse (nur als Hash), Sperre nach 8 Fehlversuchen beim Login. Gilt auch für das Spielwunsch-Formular.
+- **Moderation**: Erster Eintrag jeder Person wird geprüft (einstellbar), «Eintrag melden», nach 3 Meldungen ausgeblendet, Konten sperren unter *Benutzer*.
+
+**Freischalten**: *Spieltreff → Einstellungen → Spieltreff für alle freischalten*. Vorher sehen Besucher nur einen Hinweis («Bald neu»), angemeldete Benutzer können alles testen. Testkonten unter *Benutzer → Neu hinzufügen* mit Rolle «Spieler» anlegen, oder dort «Registrierung schon vor der Freischaltung öffnen» anhaken. Die Regeln liegen als Seite `spieltreff-regeln` vor und sollten vor dem Start geprüft werden.
+
 ## Installieren
 
 1. Zip hochladen unter *Design → Themes → Theme hinzufügen → Theme hochladen*, dann aktivieren.
@@ -37,4 +51,4 @@ cd website && zip -r spieltafel-theme.zip spieltafel
 
 ## Datenschutz
 
-Das Theme lädt keine Schriften, Skripte oder Bilder von fremden Servern. Die Emoji-Skripte von WordPress sind abgeschaltet.
+Das Theme lädt keine Schriften, Skripte oder Bilder von fremden Servern, auch der Spamschutz läuft ohne fremde Dienste. Die Emoji-Skripte von WordPress sind abgeschaltet.
