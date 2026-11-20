@@ -145,7 +145,16 @@ function spieltafel_handle_wish() {
 				)
 			)
 		);
-		$headers = $email ? array( 'Reply-To: ' . ( $name ? $name . ' ' : '' ) . '<' . $email . '>' ) : array();
+		$headers = array();
+		$from    = spieltafel_mod( 'wish_from' );
+		if ( $from && is_email( $from ) ) {
+			$from_name = spieltafel_mod( 'wish_from_name' );
+			$from_name = $from_name ? $from_name : get_bloginfo( 'name' );
+			$headers[] = 'From: ' . str_replace( array( '"', "\r", "\n" ), '', $from_name ) . ' <' . $from . '>';
+		}
+		if ( $email ) {
+			$headers[] = 'Reply-To: ' . ( $name ? str_replace( array( '"', ',', '<', '>' ), '', $name ) . ' ' : '' ) . '<' . $email . '>';
+		}
 		wp_mail( $to, $subject, $body, $headers );
 	}
 
