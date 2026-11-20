@@ -276,8 +276,8 @@
     ],
     "color": "#3a7bd5",
     "players": "2 bis 9 Spieler",
-    "winner": "Wer übrig bleibt, gewinnt",
-    "end": "4 Leben pro Spieler (einstellbar)",
+    "winner": "Höchste Summe gewinnt",
+    "end": "Ende, wann ihr wollt",
     "modes": [],
     "guide": [
       "Jeder bekommt 3 Karten, 3 weitere liegen offen in der Mitte.",
@@ -331,7 +331,6 @@
       "stiche",
       "ansagen",
       "oh hell",
-      "wizard",
       "karten"
     ],
     "color": "#1d2420",
@@ -353,93 +352,183 @@
     "upcoming": false
   },
   {
-    "id": "uno",
-    "name": "Uno",
-    "category": "Kartenspiel",
-    "description": "2 bis 10 Spieler · wer 500 erreicht, verliert",
-    "keywords": [
-      "uno",
-      "karten",
-      "familie",
-      "kinder"
-    ],
-    "color": "#c0563b",
-    "players": "2 bis 10 Spieler",
-    "winner": "Tiefste Summe gewinnt",
-    "end": "Ende bei 500 Punkten (einstellbar)",
-    "modes": [],
-    "guide": [
-      "Jeder bekommt 7 Karten. Man legt eine Karte gleicher Farbe, gleicher Zahl oder mit gleichem Symbol, sonst zieht man.",
-      "Aussetzen, Richtungswechsel und Zieh 2 wirken auf den Nächsten. Farbwahl und Zieh 4 darf man immer legen.",
-      "Bei der zweitletzten Karte ruft man «Uno».",
-      "Ist jemand fertig, zählen die anderen ihre Handkarten: Zahlen nach Wert, Aktionskarten 20, Farbwahlkarten 50.",
-      "Wer 500 Punkte erreicht, hat verloren. Es gewinnt, wer am wenigsten hat."
-    ],
-    "rules": {
-      "url": "https://de.wikipedia.org/wiki/Uno_(Kartenspiel)",
-      "source": "Wikipedia"
-    },
-    "upcoming": true
-  },
-  {
-    "id": "phase-10",
-    "name": "Phase 10",
-    "category": "Kartenspiel",
-    "description": "2 bis 6 Spieler · Strafpunkte, wenig gewinnt",
-    "keywords": [
-      "phase",
-      "phase 10",
-      "phasen",
-      "karten",
-      "familie"
-    ],
-    "color": "#8a5cc2",
-    "players": "2 bis 6 Spieler",
-    "winner": "Tiefste Summe gewinnt",
-    "end": "Ende, wann ihr wollt",
-    "modes": [],
-    "guide": [
-      "Jeder bekommt 10 Karten. Wer dran ist, zieht eine Karte und legt eine ab.",
-      "Hat man die Karten für seine Phase, zum Beispiel zwei Drillinge, legt man sie aus und darf danach bei allen Phasen anlegen.",
-      "Wer alle Karten los ist, beendet die Runde. Wer seine Phase geschafft hat, spielt nächste Runde die nächste.",
-      "Die anderen zählen ihre Handkarten: 1 bis 9 je 5 Punkte, 10 bis 12 je 10, Aussetzen 15, Joker 25.",
-      "Wer zuerst Phase 10 schafft, gewinnt, bei Gleichstand der mit weniger Punkten. Die Phasen merkt ihr euch selbst."
-    ],
-    "rules": {
-      "url": "https://de.wikipedia.org/wiki/Phase_10",
-      "source": "Wikipedia"
-    },
-    "upcoming": true
-  },
-  {
     "id": "wizard",
     "name": "Wizard",
     "category": "Kartenspiel",
-    "description": "3 bis 6 Spieler · Stiche richtig vorhersagen",
+    "description": "3 bis 6 Spieler · Stiche genau ansagen",
     "keywords": [
       "wizard",
-      "stiche",
-      "ansage",
       "zauberer",
+      "stiche",
+      "ansagen",
+      "amigo",
       "karten"
     ],
-    "color": "#3b4a8f",
+    "color": "#3b4fa0",
     "players": "3 bis 6 Spieler",
     "winner": "Höchste Summe gewinnt",
     "end": "Runden nach Anzahl Karten (60 geteilt durch Spieler)",
     "modes": [],
     "guide": [
-      "In Runde 1 bekommt jeder 1 Karte, in Runde 2 zwei Karten und so weiter. Die nächste Karte bestimmt Trumpf.",
-      "Jeder sagt an, wie viele Stiche er machen wird.",
-      "Farbe muss angegeben werden. Der erste Zauberer gewinnt den Stich immer, ein Narr nie.",
-      "In der App Ansage und Stiche eintragen. Getroffen gibt 20 plus 10 je Stich, daneben 10 Abzug je Stich Unterschied.",
-      "Es gibt so viele Runden, wie die 60 Karten reichen, bei 4 Spielern also 15. Am meisten Punkte gewinnt."
+      "60 Karten: vier Farben von 1 bis 13, dazu je vier Zauberer und Narren. In Runde 1 bekommt jeder 1 Karte, in Runde 2 zwei und so weiter.",
+      "Die nächste Karte vom Stapel bestimmt Trumpf. Dann sagt jeder an, wie viele Stiche er machen wird.",
+      "Farbe muss man bedienen. Zauberer und Narren darf man immer spielen: Der erste Zauberer gewinnt den Stich, Narren gewinnen nie.",
+      "Ansage getroffen gibt 20 Punkte plus 10 pro Stich. Daneben gibt es 10 Punkte Abzug pro Stich Unterschied.",
+      "Die App rechnet die Punkte aus. Gespielt wird, bis die Karten aufgehen: 60 geteilt durch die Anzahl Spieler."
     ],
     "rules": {
       "url": "https://de.wikipedia.org/wiki/Wizard_(Spiel)",
       "source": "Wikipedia"
     },
-    "upcoming": true
+    "upcoming": false
+  },
+  {
+    "id": "uno",
+    "name": "Uno",
+    "category": "Kartenspiel",
+    "description": "2 bis 10 Spieler · Rundensieger kassiert, 500 gewinnt",
+    "keywords": [
+      "uno",
+      "mattel",
+      "farben",
+      "karten"
+    ],
+    "color": "#d63b3b",
+    "players": "2 bis 10 Spieler",
+    "winner": "Höchste Summe gewinnt",
+    "end": "Ziel: 500 Punkte (einstellbar)",
+    "modes": [],
+    "guide": [
+      "Jeder bekommt 7 Karten. Reihum eine Karte gleicher Farbe, gleicher Zahl oder gleichen Symbols ablegen, sonst eine ziehen.",
+      "Aktionskarten: Aussetzen, Richtungswechsel und Zieh zwei. Schwarze Karten wünschen eine Farbe, Zieh vier zusätzlich vier Karten.",
+      "Bei der zweitletzten Karte «Uno» rufen. Wer es vergisst und erwischt wird, zieht zwei Strafkarten.",
+      "Wer zuerst keine Karten mehr hat, bekommt die Werte der anderen: Zahlen ihren Wert, farbige Aktionskarten 20, schwarze Karten 50.",
+      "In der App nur beim Rundensieger die Punkte eintragen. Wer zuerst 500 hat, gewinnt."
+    ],
+    "rules": {
+      "url": "https://de.wikipedia.org/wiki/Uno_(Kartenspiel)",
+      "source": "Wikipedia"
+    },
+    "upcoming": false
+  },
+  {
+    "id": "phase-10",
+    "name": "Phase 10",
+    "category": "Kartenspiel",
+    "description": "2 bis 6 Spieler · zuerst alle zehn Phasen",
+    "keywords": [
+      "phase",
+      "phase 10",
+      "phase10",
+      "karten"
+    ],
+    "color": "#c77d1e",
+    "players": "2 bis 6 Spieler",
+    "winner": "Meiste Phasen gewinnt, bei Gleichstand wenig Punkte",
+    "end": "Ende, wenn jemand Phase 10 schafft",
+    "modes": [],
+    "guide": [
+      "Jeder bekommt 10 Karten. Es gibt zehn Phasen nacheinander, zum Beispiel zwei Drillinge oder eine Folge aus sieben Karten.",
+      "Pro Zug eine Karte ziehen und eine ablegen. Wer seine Phase vollständig hat, legt sie aus und darf danach überall anlegen.",
+      "Wer zuerst keine Karten mehr hat, beendet die Runde. Wer seine Phase geschafft hat, spielt in der nächsten Runde die nächste.",
+      "Restkarten zählen Minuspunkte: 1 bis 9 je 5, 10 bis 12 je 10, Aussetzen 15, Joker 25.",
+      "In der App Restpunkte eintragen und antippen, wer seine Phase geschafft hat. Wer zuerst Phase 10 schafft, gewinnt; bei Gleichstand die wenigsten Punkte."
+    ],
+    "rules": {
+      "url": "https://de.wikipedia.org/wiki/Phase_10",
+      "source": "Wikipedia"
+    },
+    "upcoming": false
+  },
+  {
+    "id": "skip-bo",
+    "name": "Skip-Bo",
+    "category": "Kartenspiel",
+    "description": "2 bis 6 Spieler · Spielstapel loswerden, 500 gewinnt",
+    "keywords": [
+      "skip",
+      "skipbo",
+      "skip-bo",
+      "mattel",
+      "karten"
+    ],
+    "color": "#2c7fb8",
+    "players": "2 bis 6 Spieler",
+    "winner": "Höchste Summe gewinnt",
+    "end": "Ziel: 500 Punkte (einstellbar)",
+    "modes": [],
+    "guide": [
+      "Jeder hat einen eigenen Spielstapel mit offener oberster Karte und dazu 5 Handkarten.",
+      "In der Mitte baut man gemeinsame Stapel von 1 bis 12 auf. Skip-Bo-Karten sind Joker.",
+      "Man legt aus der Hand, vom Spielstapel oder von bis zu vier eigenen Ablagestapeln an. Zum Schluss des Zuges eine Handkarte ablegen.",
+      "Wer zuerst seinen Spielstapel los ist, gewinnt die Runde.",
+      "Der Rundensieger bekommt 25 Punkte plus 5 für jede Karte, die den anderen im Spielstapel bleibt. Nur bei ihm eintragen; wer zuerst 500 hat, gewinnt."
+    ],
+    "rules": {
+      "url": "https://de.wikipedia.org/wiki/Skip-Bo",
+      "source": "Wikipedia"
+    },
+    "upcoming": false
+  },
+  {
+    "id": "flip-7",
+    "name": "Flip 7",
+    "category": "Kartenspiel",
+    "description": "ab 3 Spielern · Glück herausfordern, 200 gewinnt",
+    "keywords": [
+      "flip",
+      "flip 7",
+      "flip7",
+      "karten",
+      "zocken"
+    ],
+    "color": "#7a3fb0",
+    "players": "ab 3 Spielern",
+    "winner": "Höchste Summe gewinnt",
+    "end": "Ziel: 200 Punkte (einstellbar)",
+    "modes": [],
+    "guide": [
+      "Reihum entscheidet jeder, ob er noch eine Karte nimmt oder aufhört. Die Karten liegen offen vor einem.",
+      "Wer eine Zahl doppelt bekommt, scheidet aus der Runde aus und erhält 0 Punkte.",
+      "Aktionskarten: Freeze beendet die Runde für einen Spieler, Flip Three verlangt drei Karten, Second Chance rettet einmal vor einer doppelten Zahl.",
+      "Gezählt werden die Zahlenkarten plus Bonuskarten wie +4 oder ×2. Wer sieben verschiedene Zahlen hat, beendet die Runde und bekommt 15 Punkte extra.",
+      "Hat am Ende einer Runde jemand 200 Punkte oder mehr, gewinnt die höchste Summe."
+    ],
+    "rules": null,
+    "upcoming": false
+  },
+  {
+    "id": "maexle",
+    "name": "Mäxle",
+    "category": "Würfelspiel",
+    "description": "ab 2 Spielern · bluffen, Strafpunkte vermeiden",
+    "keywords": [
+      "mäxle",
+      "maexle",
+      "mäxchen",
+      "meier",
+      "meiern",
+      "würfel",
+      "lügen",
+      "bluffen"
+    ],
+    "color": "#5b6b2f",
+    "players": "ab 2 Spielern",
+    "winner": "Tiefste Summe gewinnt",
+    "end": "Ende bei 6 Strafpunkten (einstellbar)",
+    "modes": [],
+    "guide": [
+      "Zwei Würfel unter einem Becher. Die höhere Zahl ist die Zehnerstelle: 3 und 5 ergibt 53.",
+      "Von tief nach hoch: 31 bis 65, dann die Pasche von 11 bis 66, ganz oben das Mäxle mit 2 und 1.",
+      "Man schaut verdeckt, sagt einen höheren Wert als der Vorgänger an und gibt weiter. Lügen ist erlaubt.",
+      "Der Nächste glaubt und würfelt selbst, oder er deckt auf. Wer gelogen oder zu Unrecht gezweifelt hat, verliert die Runde.",
+      "In der App beim Verlierer 1 Strafpunkt eintragen, bei einem Mäxle 2. Wer das Limit erreicht, beendet die Partie; wenig gewinnt."
+    ],
+    "rules": {
+      "url": "https://de.wikipedia.org/wiki/M%C3%A4xchen",
+      "source": "Wikipedia"
+    },
+    "upcoming": false
   },
   {
     "id": "qwirkle",
@@ -468,37 +557,6 @@
       "source": "Schmidt Spiele (PDF)"
     },
     "upcoming": false
-  },
-  {
-    "id": "maexle",
-    "name": "Mäxle",
-    "category": "Würfelspiel",
-    "description": "2 oder mehr Spieler · bluffen, Leben verlieren",
-    "keywords": [
-      "mäxle",
-      "mäxchen",
-      "meiern",
-      "würfel",
-      "bluff",
-      "leben"
-    ],
-    "color": "#e0a526",
-    "players": "ab 2 Spielern",
-    "winner": "Wer übrig bleibt, gewinnt",
-    "end": "6 Leben pro Spieler (einstellbar)",
-    "modes": [],
-    "guide": [
-      "Man würfelt verdeckt mit zwei Würfeln im Becher. Die höhere Zahl ist der Zehner: 3 und 5 ist 53.",
-      "Pasche (zwei Gleiche) sind höher, am höchsten ist 21, das Mäxle.",
-      "Man sagt einen höheren Wurf an als der Vorgänger und gibt den Becher weiter. Die Ansage darf gelogen sein.",
-      "Der Nächste glaubt und würfelt selbst, oder er deckt auf. Wer falsch lag, verliert ein Leben: der Lügner oder der Zweifler.",
-      "In der App tippt ihr an, wer ein Leben verliert. Jeder startet mit 6 Leben, der Letzte im Spiel gewinnt."
-    ],
-    "rules": {
-      "url": "https://de.wikipedia.org/wiki/M%C3%A4xchen",
-      "source": "Wikipedia"
-    },
-    "upcoming": true
   },
   {
     "id": "frei",

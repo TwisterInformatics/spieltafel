@@ -1,5 +1,5 @@
 /** Art der Wertung. Bestimmt, welche Eingabe eine Runde hat und wie gerechnet wird. */
-export type ScoringKind = 'rounds' | 'skyjo' | 'jassSchieber' | 'differenzler' | 'coiffeur' | 'placement' | 'lives' | 'wizard';
+export type ScoringKind = 'rounds' | 'skyjo' | 'jassSchieber' | 'differenzler' | 'coiffeur' | 'placement' | 'lives' | 'wizard' | 'phase10';
 
 export type WinnerRule = 'highest' | 'lowest';
 
@@ -7,6 +7,8 @@ export type EndRule =
   | { type: 'target'; target: number }
   | { type: 'rounds'; rounds: number }
   | { type: 'allModes' }
+  /** Phase 10: Schluss nach der Runde, in der jemand die letzte Phase schafft. */
+  | { type: 'phases'; phases: number }
   | { type: 'manual' }
   /** Jeder startet mit Leben. Wer keine mehr hat, ist draussen. Der Letzte im Spiel gewinnt. */
   | { type: 'lastStanding'; lives: number };
@@ -19,7 +21,7 @@ export interface JassMode {
 export interface GameTemplate {
   id: string;
   name: string;
-  category: 'Kartenspiel' | 'Legespiel' | 'Würfelspiel' | 'Frei';
+  category: 'Kartenspiel' | 'Würfelspiel' | 'Legespiel' | 'Frei';
   description: string;
   keywords: string[];
   kind: ScoringKind;
@@ -32,9 +34,9 @@ export interface GameTemplate {
   /** Darf die Siegerregel pro Partie geändert werden (freie Zählung)? */
   winnerAdjustable?: boolean;
   end: EndRule;
-  modes?: JassMode[];
-  /** Anzahl Runden ergibt sich aus den Karten: Karten im Spiel geteilt durch Spieler (Wizard). */
+  /** Anzahl Runden = Karten geteilt durch Spieler (Wizard: 60 Karten). */
   roundsFromDeck?: number;
+  modes?: JassMode[];
   /** Kurzanleitung in wenigen Sätzen, je ein Punkt pro Eintrag. */
   guide: string[];
   /** Ausführliche Anleitung im Netz. */
@@ -72,7 +74,9 @@ export type RoundData =
   | { kind: 'placement'; order: string[] }
   /** Wer in dieser Runde ein Leben verliert. */
   | { kind: 'lives'; losers: string[] }
-  | { kind: 'wizard'; ansage: Record<string, number>; stiche: Record<string, number> };
+  | { kind: 'wizard'; ansage: Record<string, number>; stiche: Record<string, number> }
+  /** Phase 10: Restpunkte und wer in dieser Runde seine Phase geschafft hat. */
+  | { kind: 'phase10'; scores: Record<string, number>; done: string[] };
 
 export interface Game {
   id: string;

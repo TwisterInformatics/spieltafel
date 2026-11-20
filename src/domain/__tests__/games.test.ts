@@ -1,6 +1,6 @@
 import { describe, expect, it } from '@jest/globals';
 
-import { isFinishedByRules, placementPoints, ranking, scoreTable, totals, wizardPoints } from '../scoring';
+import { isFinishedByRules, placementPoints, ranking, scoreTable, totals, wizardScore } from '../scoring';
 import { getTemplate, searchTemplates } from '../templates';
 import type { Game, Participant } from '../types';
 
@@ -73,26 +73,26 @@ describe('Leben (Schnauz, Mäxle)', () => {
 
 describe('Wizard', () => {
   it('gibt 20 plus 10 je Stich bei getroffener Ansage', () => {
-    expect(wizardPoints(0, 0)).toBe(20);
-    expect(wizardPoints(3, 3)).toBe(50);
+    expect(wizardScore(0, 0)).toBe(20);
+    expect(wizardScore(3, 3)).toBe(50);
   });
   it('zieht 10 je Stich Abweichung ab', () => {
-    expect(wizardPoints(2, 0)).toBe(-20);
-    expect(wizardPoints(1, 4)).toBe(-30);
+    expect(wizardScore(2, 0)).toBe(-20);
+    expect(wizardScore(1, 4)).toBe(-30);
   });
   it('rechnet die Runden aus den 60 Karten', () => {
     expect(getTemplate('wizard')?.roundsFromDeck).toBe(60);
   });
 });
 
-describe('Strafpunkte-Spiele', () => {
-  it('beendet Uno bei 500 und der Tiefste gewinnt', () => {
+describe('Uno', () => {
+  it('endet bei 500 und der Höchste gewinnt', () => {
     const t = getTemplate('uno')!;
     const g = game({
       settings: { winner: t.winner, end: t.end },
       rounds: [{ kind: 'rounds', scores: { a: 320, b: 30, c: 90 } }, { kind: 'rounds', scores: { a: 185, b: 10, c: 0 } }],
     });
     expect(isFinishedByRules(g)).toBe(true);
-    expect(ranking(g)[0].participant.id).toBe('b');
+    expect(ranking(g)[0].participant.id).toBe('a');
   });
 });

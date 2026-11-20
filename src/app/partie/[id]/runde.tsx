@@ -10,15 +10,15 @@ import { addRound, finishGame, getGame } from '@/data/db';
 import { useGame } from '@/data/hooks';
 import {
   alive,
-  endsWithLastRound,
+  isFinishedByRules,
   JASS_MATCH,
   jassCounterPoints,
   openCoiffeurModes,
+  phasesDone,
   placementPoints,
   roundScores,
   skyjoRoundScores,
   totals,
-  wizardPoints,
 } from '@/domain/scoring';
 import { getTemplate } from '@/domain/templates';
 import type { Game, Participant, RoundData } from '@/domain/types';
@@ -54,11 +54,13 @@ function RoundForm({ game }: { game: Game }) {
   const [stoeck, setStoeck] = useState<string | null>(null);
   const [order, setOrder] = useState<string[]>([]);
   const [losers, setLosers] = useState<string[]>([]);
+  const [done, setDone] = useState<string[]>([]);
 
   const set = (setter: typeof setScores) => (pid: string, v: number | null) => setter((prev) => ({ ...prev, [pid]: v }));
   const modes = game.settings.modes ?? [];
   const mode = modes.find((m) => m.name === modeName);
   const anyValue = Object.values(scores).some((v) => v !== null);
+  const phases = phasesDone(game);
 
   let data: RoundData | null = null;
   let hint: string | null = null;
@@ -95,16 +97,21 @@ function RoundForm({ game }: { game: Game }) {
     if (ps.length > 1 && order.length >= ps.length - 1) data = { kind: 'placement', order };
   } else if (kind === 'lives') {
     if (losers.length > 0) data = { kind: 'lives', losers };
+  } else if (kind === 'coiffeur') {
+    const pts = scores[teamId];
+    if (modeName && pts !== null) data = { kind: 'coiffeur', teamId, modeName, points: pts };
   } else if (kind === 'wizard') {
     const complete = ps.every((p) => scores[p.id] !== null && second[p.id] !== null);
     if (complete) data = { kind: 'wizard', ansage: filled(scores), stiche: filled(second) };
     const sum = ps.reduce((acc, p) => acc + (second[p.id] ?? 0), 0);
     const cards = game.rounds.length + 1;
-    if (ps.every((p) => second[p.id] !== null) && sum !== cards)
+    if (ps.every((p) => second[p.id] !== null) && sum !== cards) {
       hint = `Die Stiche ergeben ${sum}. In Runde ${cards} gibt es ${cards} ${cards === 1 ? 'Stich' : 'Stiche'}.`;
-  } else if (kind === 'coiffeur') {
-    const pts = scores[teamId];
-    if (modeName && pts !== null) data = { kind: 'coiffeur', teamId, modeName, points: pts };
+    } else if (data) {
+      hint = `Diese Runde: ${ps.map((p) => `${p.name} ${roundScores(data!, ps)[p.id]}`).join(' · ')}`;
+    }
+  } else if (kind === 'phase10') {
+    if (anyValue || done.length > 0) data = { kind: 'phase10', scores: filled(scores), done };
   }
 
   async function save() {
@@ -112,7 +119,7 @@ function RoundForm({ game }: { game: Game }) {
     setSaving(true);
     await addRound(db, game.id, data);
     const updated = await getGame(db, game.id);
-    if (updated && endsWithLastRound(updated)) await finishGame(db, game.id);
+    if (updated && isFinishedByRules(updated)) await finishGame(db, game.id);
     router.back();
   }
 
@@ -193,7 +200,34 @@ function RoundForm({ game }: { game: Game }) {
         </>
       ) : null}
 
-      {kind === 'differenzler'
+      {kind === 'phase10' ? (
+        <>
+          <View style={wide ? s.playerGrid : s.playerList}>
+            {ps.map((p) => (
+              <PlayerRow
+                key={p.id}
+                p={p}
+                meta={`Phase ${Math.min(phases[p.id] + 1, 10)} · Total ${totals(game)[p.id]}`}
+                style={wide ? s.playerCell : undefined}>
+                <NumberField value={scores[p.id]} onChange={(v) => set(setScores)(p.id, v)} allowNegative={false} />
+              </PlayerRow>
+            ))}
+          </View>
+          <Label>Wer hat seine Phase geschafft?</Label>
+          <View style={ui.wrap}>
+            {ps.map((p) => (
+              <Chip
+                key={p.id}
+                title={`${p.name} · Phase ${Math.min(phases[p.id] + 1, 10)}`}
+                active={done.includes(p.id)}
+                onPress={() => setDone(done.includes(p.id) ? done.filter((x) => x !== p.id) : [...done, p.id])}
+              />
+            ))}
+          </View>
+        </>
+      ) : null}
+
+      {kind === 'differenzler' || kind === 'wizard'
         ? ps.map((p) => (
             <Card key={p.id} style={{ flexDirection: 'column', alignItems: 'stretch', gap: 10 }}>
               <View style={ui.row}>
@@ -204,7 +238,7 @@ function RoundForm({ game }: { game: Game }) {
               <View style={[ui.row, { justifyContent: 'space-between' }]}>
                 <Text style={ui.meta}>Ansage</Text>
                 <NumberField value={scores[p.id]} onChange={(v) => set(setScores)(p.id, v)} allowNegative={false} />
-                <Text style={ui.meta}>Erzielt</Text>
+                <Text style={ui.meta}>{kind === 'wizard' ? 'Stiche' : 'Erzielt'}</Text>
                 <NumberField value={second[p.id]} onChange={(v) => set(setSecond)(p.id, v)} allowNegative={false} />
               </View>
             </Card>
@@ -302,28 +336,6 @@ function RoundForm({ game }: { game: Game }) {
           ) : null}
         </>
       ) : null}
-
-      {kind === 'wizard'
-        ? ps.map((p) => (
-            <Card key={p.id} style={{ flexDirection: 'column', alignItems: 'stretch', gap: 10 }}>
-              <View style={ui.row}>
-                <Avatar name={p.name} color={p.color} size={32} />
-                <Text style={[ui.cardTitle, { flex: 1 }]}>{p.name}</Text>
-                <Text style={ui.meta}>
-                  {scores[p.id] !== null && second[p.id] !== null
-                    ? `diese Runde ${wizardPoints(scores[p.id]!, second[p.id]!)}`
-                    : `Total ${totals(game)[p.id]}`}
-                </Text>
-              </View>
-              <View style={[ui.row, { justifyContent: 'space-between' }]}>
-                <Text style={ui.meta}>Ansage</Text>
-                <NumberField value={scores[p.id]} onChange={(v) => set(setScores)(p.id, v)} />
-                <Text style={ui.meta}>Stiche</Text>
-                <NumberField value={second[p.id]} onChange={(v) => set(setSecond)(p.id, v)} />
-              </View>
-            </Card>
-          ))
-        : null}
 
       {hint ? <Hint>{hint}</Hint> : null}
     </Screen>

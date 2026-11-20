@@ -7,7 +7,13 @@ import { TemplateColors } from '../../src/constants/theme.ts';
 
 // Spiele, die im Code (main) schon da sind, aber noch nicht in der App-Version im Store.
 // Nach dem nächsten Release hier entfernen und npm run website:data ausführen.
-const NOCH_NICHT_IM_STORE = ['uno', 'phase-10', 'wizard', 'maexle'];
+const NOCH_NICHT_IM_STORE = [];
+
+// Spielende, wenn das Ziel keine Punkte sind.
+const ENDE_TEXT = {
+  schwimmen: (n) => `Ende beim ${n}. verlorenen Leben (einstellbar)`,
+  maexle: (n) => `Ende bei ${n} Strafpunkten (einstellbar)`,
+};
 
 function players(t) {
   if (t.teams) return `${t.teams} Teams zu ${t.teamSize ?? 2}`;
@@ -20,13 +26,14 @@ function ending(t) {
   const e = t.end;
   switch (e.type) {
     case 'target':
+      if (ENDE_TEXT[t.id]) return ENDE_TEXT[t.id](e.target);
       return t.winner === 'lowest' ? `Ende bei ${e.target} Punkten (einstellbar)` : `Ziel: ${e.target} Punkte (einstellbar)`;
     case 'rounds':
       return t.roundsFromDeck ? `Runden nach Anzahl Karten (${t.roundsFromDeck} geteilt durch Spieler)` : `${e.rounds} Runden (einstellbar)`;
     case 'allModes':
       return 'Ende, wenn alle Spielarten gespielt sind';
-    case 'lastStanding':
-      return `${e.lives} Leben pro Spieler (einstellbar)`;
+    case 'phases':
+      return `Ende, wenn jemand Phase ${e.phases} schafft`;
     default:
       return 'Ende, wann ihr wollt';
   }
@@ -34,7 +41,7 @@ function ending(t) {
 
 function winner(t) {
   if (t.winnerAdjustable) return 'Höchste oder tiefste Summe gewinnt, wählbar';
-  if (t.end.type === 'lastStanding') return 'Wer übrig bleibt, gewinnt';
+  if (t.end.type === 'phases') return 'Meiste Phasen gewinnt, bei Gleichstand wenig Punkte';
   return t.winner === 'lowest' ? 'Tiefste Summe gewinnt' : 'Höchste Summe gewinnt';
 }
 

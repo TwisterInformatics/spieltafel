@@ -11,7 +11,7 @@ import { dayLabel, participantsLine, shortScore, winnerText } from '@/domain/sum
 import { getTemplate, searchTemplates } from '@/domain/templates';
 import type { Game, GameTemplate } from '@/domain/types';
 
-const CATEGORIES: (GameTemplate['category'] | undefined)[] = [undefined, 'Kartenspiel', 'Legespiel', 'Würfelspiel', 'Frei'];
+const CATEGORIES: (GameTemplate['category'] | undefined)[] = [undefined, 'Kartenspiel', 'Würfelspiel', 'Legespiel', 'Frei'];
 /** So viele beendete Partien zeigt die Seitenspalte auf breiten Tablets. */
 const RECENT_COUNT = 4;
 

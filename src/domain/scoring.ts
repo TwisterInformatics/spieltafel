@@ -31,9 +31,20 @@ export function placementPoints(order: string[], participantIds: string[]): Reco
   return out;
 }
 
-/** Wizard: Ansage getroffen gibt 20 plus 10 je Stich, sonst 10 Abzug je Stich daneben. */
-export function wizardPoints(ansage: number, stiche: number): number {
+/** Wizard: Ansage getroffen gibt 20 plus 10 pro Stich, sonst 10 Abzug pro Stich Unterschied. */
+export function wizardScore(ansage: number, stiche: number): number {
   return ansage === stiche ? 20 + 10 * stiche : -10 * Math.abs(ansage - stiche);
+}
+
+/** Phase 10: wie viele Phasen jeder schon geschafft hat. */
+export function phasesDone(game: Game): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const p of game.participants) out[p.id] = 0;
+  for (const r of game.rounds) {
+    if (r.kind !== 'phase10') continue;
+    for (const id of r.done) if (id in out) out[id] += 1;
+  }
+  return out;
 }
 
 /** Punkte, die eine einzelne Runde jedem Teilnehmer gibt. */
@@ -69,7 +80,10 @@ export function roundScores(round: RoundData, participants: Participant[]): Reco
       for (const id of round.losers) if (id in out) out[id] = -1;
       break;
     case 'wizard':
-      for (const p of participants) out[p.id] = wizardPoints(round.ansage[p.id] ?? 0, round.stiche[p.id] ?? 0);
+      for (const p of participants) out[p.id] = wizardScore(round.ansage[p.id] ?? 0, round.stiche[p.id] ?? 0);
+      break;
+    case 'phase10':
+      for (const p of participants) out[p.id] = round.scores[p.id] ?? 0;
       break;
     case 'coiffeur':
       // Nur das spielende Team schreibt; der Faktor wird beim Speichern mitgegeben.
@@ -131,18 +145,13 @@ export function isFinishedByRules(game: Game): boolean {
       return (game.settings.modes?.length ?? 0) > 0 && game.participants.every((p) => openCoiffeurModes(game, p.id).length === 0);
     case 'lastStanding':
       return game.participants.length > 1 && alive(game).length <= 1;
+    case 'phases': {
+      const done = phasesDone(game);
+      return Object.values(done).some((n) => n >= end.phases);
+    }
     case 'manual':
       return false;
   }
-}
-
-/**
- * Hat genau die letzte Runde die Partie beendet? Eine wieder aufgenommene Partie, die ihr Ziel
- * schon vorher erreicht hatte, läuft weiter, bis sie von Hand beendet wird.
- */
-export function endsWithLastRound(game: Game): boolean {
-  if (game.rounds.length === 0) return false;
-  return isFinishedByRules(game) && !isFinishedByRules({ ...game, rounds: game.rounds.slice(0, -1) });
 }
 
 /** Lässt sich eine beendete Partie weiterspielen? Nein, wenn keine weitere Runde möglich ist. */
@@ -163,18 +172,27 @@ export interface RankEntry {
   participant: Participant;
   total: number;
   rank: number;
+  /** Nur Phase 10: geschaffte Phasen. */
+  phases?: number;
 }
 
-/** Rangliste nach Siegerregel. Gleiche Punkte teilen sich den Rang. */
+/**
+ * Rangliste nach Siegerregel. Gleiche Punkte teilen sich den Rang.
+ * Phase 10: zuerst die meisten geschafften Phasen, dann die wenigsten Punkte.
+ */
 export function ranking(game: Game): RankEntry[] {
   const t = totals(game);
   const dir = game.settings.winner === 'highest' ? -1 : 1;
-  const sorted = [...game.participants].sort((a, b) => dir * (t[a.id] - t[b.id]));
+  const phases = game.settings.end.type === 'phases' ? phasesDone(game) : null;
+  const sorted = [...game.participants].sort(
+    (a, b) => (phases ? phases[b.id] - phases[a.id] : 0) || dir * (t[a.id] - t[b.id]),
+  );
   const out: RankEntry[] = [];
   sorted.forEach((p, i) => {
     const prev = out[i - 1];
-    const rank = prev && prev.total === t[p.id] ? prev.rank : i + 1;
-    out.push({ participant: p, total: t[p.id], rank });
+    const same = prev && prev.total === t[p.id] && (!phases || prev.phases === phases[p.id]);
+    const rank = same ? prev.rank : i + 1;
+    out.push({ participant: p, total: t[p.id], rank, ...(phases ? { phases: phases[p.id] } : {}) });
   });
   return out;
 }

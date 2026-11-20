@@ -25,20 +25,22 @@ const NUMBER_KEYBOARD = Platform.OS === 'ios' ? 'numbers-and-punctuation' : 'num
 type ViewRef = ComponentRef<typeof View>;
 
 /**
- * iOS verkleinert das Fenster nicht, wenn die Tastatur erscheint (Android macht das selbst).
- * Liefert, wie weit die Tastatur den Container überdeckt, damit Inhalt und Fusszeile darüber bleiben.
+ * Wie weit die Tastatur den Container überdeckt, damit Inhalt und Fusszeile darüber bleiben.
+ * Weder iOS noch Android (randlos) verkleinern das Fenster für die Tastatur.
  */
 function useKeyboardOverlap(container: RefObject<ViewRef | null>): number {
   const [overlap, setOverlap] = useState(0);
   const { isTablet } = useLayout();
   useEffect(() => {
-    if (Platform.OS !== 'ios') return;
-    const show = Keyboard.addListener('keyboardWillShow', (e) => {
+    const ios = Platform.OS === 'ios';
+    const show = Keyboard.addListener(ios ? 'keyboardWillShow' : 'keyboardDidShow', (e) => {
+      const keyboardTop = e.endCoordinates.screenY;
       container.current?.measureInWindow((_x: number, y: number, _w: number, h: number) => {
-        setOverlap(keyboardOverlap(y + h, Dimensions.get('window').height, e.endCoordinates.screenY, isTablet));
+        // iOS: Das Blatt kann beim Erscheinen der Tastatur noch wandern, darum die Hilfsrechnung.
+        setOverlap(ios ? keyboardOverlap(y + h, Dimensions.get('window').height, keyboardTop, isTablet) : Math.max(0, y + h - keyboardTop));
       });
     });
-    const hide = Keyboard.addListener('keyboardWillHide', () => setOverlap(0));
+    const hide = Keyboard.addListener(ios ? 'keyboardWillHide' : 'keyboardDidHide', () => setOverlap(0));
     return () => {
       show.remove();
       hide.remove();
@@ -191,10 +193,12 @@ export function NumberField({
   const { k } = useLayout();
   // Eigener Text, damit ein angefangenes "-" stehen bleibt, bis die Ziffern kommen.
   const [text, setText] = useState(() => formatNumberInput(value));
-  useEffect(() => {
-    // Wert von aussen geändert (z.B. Formular zurückgesetzt): Feld nachziehen.
-    setText((current) => (parseNumberInput(current).value === value ? current : formatNumberInput(value)));
-  }, [value]);
+  // Wert von aussen geändert (z.B. Formular zurückgesetzt): Feld beim Rendern nachziehen.
+  const [shownValue, setShownValue] = useState(value);
+  if (value !== shownValue) {
+    setShownValue(value);
+    if (parseNumberInput(text).value !== value) setText(formatNumberInput(value));
+  }
   const apply = (parsed: { text: string; value: number | null }) => {
     setText(parsed.text);
     onChange(parsed.value);

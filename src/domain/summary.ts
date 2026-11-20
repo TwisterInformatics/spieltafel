@@ -5,6 +5,10 @@ import type { Game } from './types';
 export function shortScore(game: Game): string {
   if (game.rounds.length === 0) return 'Noch keine Runde';
   const t = totals(game);
+  if (game.settings.end.type === 'phases') {
+    const lead = ranking(game)[0];
+    return `${lead.participant.name} führt mit ${lead.phases ?? 0} von ${game.settings.end.phases} Phasen`;
+  }
   if (game.participants.length === 2) {
     const [a, b] = game.participants;
     return `${t[a.id]} : ${t[b.id]}`;

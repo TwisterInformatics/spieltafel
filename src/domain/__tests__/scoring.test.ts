@@ -3,14 +3,15 @@ import { describe, expect, it } from '@jest/globals';
 import { COIFFEUR_MODES, searchTemplates, TEMPLATES } from '../templates';
 import {
   canResume,
-  endsWithLastRound,
   isFinishedByRules,
   jassCounterPoints,
   openCoiffeurModes,
+  phasesDone,
   ranking,
   scoreTable,
   skyjoRoundScores,
   totals,
+  wizardScore,
 } from '../scoring';
 import type { Game, Participant } from '../types';
 
@@ -144,18 +145,6 @@ describe('Partie wieder aufnehmen', () => {
   const target = { winner: 'highest' as const, end: { type: 'target' as const, target: 100 } };
   const round = (a: number, b: number) => ({ kind: 'rounds' as const, scores: { a, b, c: 0 } });
 
-  it('beendet die Partie mit der Runde, die das Ziel erreicht', () => {
-    expect(endsWithLastRound(game({ settings: target, rounds: [round(60, 10)] }))).toBe(false);
-    expect(endsWithLastRound(game({ settings: target, rounds: [round(60, 10), round(50, 10)] }))).toBe(true);
-  });
-  it('beendet eine weitergespielte Partie nicht nach jeder Runde neu', () => {
-    const rounds = [round(60, 10), round(50, 10), round(5, 5)];
-    expect(isFinishedByRules(game({ settings: target, rounds }))).toBe(true);
-    expect(endsWithLastRound(game({ settings: target, rounds }))).toBe(false);
-  });
-  it('ohne Runden ist nichts beendet', () => {
-    expect(endsWithLastRound(game({ settings: target }))).toBe(false);
-  });
   it('lässt Partien mit Punkten immer weiterspielen', () => {
     expect(canResume(game({ settings: target, rounds: [round(120, 0)] }))).toBe(true);
     expect(canResume(game({ rounds: [round(1, 2)] }))).toBe(true);
@@ -164,5 +153,52 @@ describe('Partie wieder aufnehmen', () => {
     const settings = { winner: 'highest' as const, end: { type: 'lastStanding' as const, lives: 1 } };
     expect(canResume(game({ settings, rounds: [{ kind: 'lives', losers: ['a'] }] }))).toBe(true);
     expect(canResume(game({ settings, rounds: [{ kind: 'lives', losers: ['a', 'b'] }] }))).toBe(false);
+  });
+});
+
+describe('Wizard', () => {
+  it('gibt 20 plus 10 pro Stich für eine getroffene Ansage', () => {
+    expect(wizardScore(0, 0)).toBe(20);
+    expect(wizardScore(3, 3)).toBe(50);
+  });
+  it('zieht 10 pro Stich Unterschied ab', () => {
+    expect(wizardScore(2, 0)).toBe(-20);
+    expect(wizardScore(1, 4)).toBe(-30);
+  });
+  it('rechnet Runden und endet nach der Rundenzahl', () => {
+    const g = game({
+      settings: { winner: 'highest', end: { type: 'rounds', rounds: 2 } },
+      rounds: [
+        { kind: 'wizard', ansage: { a: 1, b: 0, c: 0 }, stiche: { a: 1, b: 0, c: 0 } },
+        { kind: 'wizard', ansage: { a: 1, b: 1, c: 0 }, stiche: { a: 0, b: 1, c: 1 } },
+      ],
+    });
+    expect(totals(g)).toEqual({ a: 20, b: 50, c: 10 });
+    expect(isFinishedByRules(g)).toBe(true);
+    expect(ranking(g)[0].participant.id).toBe('b');
+  });
+});
+
+describe('Phase 10', () => {
+  const settings = { winner: 'lowest' as const, end: { type: 'phases' as const, phases: 10 } };
+  it('zählt geschaffte Phasen und rangiert nach Phasen vor Punkten', () => {
+    const g = game({
+      settings,
+      rounds: [
+        { kind: 'phase10', scores: { a: 0, b: 40, c: 5 }, done: ['a', 'c'] },
+        { kind: 'phase10', scores: { a: 30, b: 0, c: 10 }, done: ['b', 'c'] },
+      ],
+    });
+    expect(phasesDone(g)).toEqual({ a: 1, b: 1, c: 2 });
+    const r = ranking(g);
+    expect(r.map((e) => e.participant.id)).toEqual(['c', 'a', 'b']);
+    expect(r.map((e) => e.phases)).toEqual([2, 1, 1]);
+    expect(isFinishedByRules(g)).toBe(false);
+  });
+  it('endet, sobald jemand die letzte Phase schafft', () => {
+    const rounds = Array.from({ length: 10 }, () => ({ kind: 'phase10' as const, scores: { a: 0, b: 5, c: 5 }, done: ['a'] }));
+    const g = game({ settings, rounds });
+    expect(isFinishedByRules(g)).toBe(true);
+    expect(ranking(g)[0].participant.id).toBe('a');
   });
 });

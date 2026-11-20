@@ -7,9 +7,9 @@ import { GameGuide } from '@/components/GameGuide';
 import { Avatar, Button, Card, Label, Screen, Title, useUi } from '@/components/ui';
 import { useLayout, useScaledStyles } from '@/constants/layout';
 import { Colors } from '@/constants/theme';
-import { createGame, deleteLastRound, finishGame, reopenGame } from '@/data/db';
+import { createGame, deleteLastRound, finishGame, resumeGame } from '@/data/db';
 import { useGame } from '@/data/hooks';
-import { alive, canResume, ranking, scoreTable, totals } from '@/domain/scoring';
+import { alive, canResume, isFinishedByRules, phasesDone, ranking, scoreTable, totals } from '@/domain/scoring';
 import { winnerText } from '@/domain/summary';
 import { getTemplate } from '@/domain/templates';
 import type { Game } from '@/domain/types';
@@ -33,11 +33,6 @@ export default function ScoreboardScreen() {
     await reload();
   }
 
-  async function resume() {
-    await reopenGame(db, game!.id);
-    await reload();
-  }
-
   function confirmUndo() {
     Alert.alert('Letzte Runde löschen?', 'Die Punkte der letzten Runde werden entfernt.', [
       { text: 'Abbrechen', style: 'cancel' },
@@ -57,19 +52,39 @@ export default function ScoreboardScreen() {
     router.replace(`/partie/${newId}`);
   }
 
+  // Ohne offene Runde (Coiffeur fertig, nur noch einer mit Leben) gibt es nichts weiterzuspielen.
+  const resumable = finished && canResume(game);
+
+  function confirmResume() {
+    const g = game!;
+    const end = g.settings.end;
+    if (!isFinishedByRules(g)) {
+      void resumeGame(db, g.id).then(reload);
+      return;
+    }
+    const reason =
+      end.type === 'target'
+        ? `Das Ziel von ${end.target} Punkten ist schon erreicht.`
+        : end.type === 'rounds'
+          ? `Alle ${end.rounds} Runden sind gespielt.`
+          : 'Die Partie ist nach den Regeln zu Ende.';
+    Alert.alert('Partie weiterspielen?', `${reason} Die Partie läuft ohne Ziel weiter, bis du sie selbst beendest.`, [
+      { text: 'Abbrechen', style: 'cancel' },
+      {
+        text: 'Weiterspielen',
+        onPress: async () => {
+          await resumeGame(db, g.id, { ...g.settings, end: { type: 'manual' } });
+          await reload();
+        },
+      },
+    ]);
+  }
+
   const footer = finished ? (
     <>
       <Button title="Revanche" onPress={rematch} />
-      <View style={s.footerRow}>
-        {canResume(game) ? (
-          <View style={{ flex: 1 }}>
-            <Button title="Weiterspielen" variant="secondary" onPress={resume} />
-          </View>
-        ) : null}
-        <View style={{ flex: 1 }}>
-          <Button title="Fertig" variant="secondary" onPress={() => router.dismissTo('/')} />
-        </View>
-      </View>
+      {resumable ? <Button title="Weiterspielen" variant="secondary" onPress={confirmResume} /> : null}
+      <Button title="Fertig" variant="secondary" onPress={() => router.dismissTo('/')} />
     </>
   ) : (
     <>
@@ -125,6 +140,10 @@ export default function ScoreboardScreen() {
   );
 }
 
+function phaseGoal(game: Game): number {
+  return game.settings.end.type === 'phases' ? game.settings.end.phases : 10;
+}
+
 /** Teams heissen "Anna und Ben" und brauchen den Plural. */
 function verb(name: string, singular: string, plural: string): string {
   return name.includes(' und ') ? plural : singular;
@@ -136,6 +155,7 @@ function statusLine(game: Game): string {
   const base = n === 1 ? 'nach 1 Runde' : `nach ${n} Runden`;
   if (end.type === 'target') return `${base} · Ziel ${end.target}`;
   if (end.type === 'rounds') return `${base} von ${end.rounds}`;
+  if (end.type === 'phases') return `${base} · bis Phase ${end.phases}`;
   return base;
 }
 
@@ -154,6 +174,7 @@ function ScoreTable({ game }: { game: Game }) {
   const s = useScaledStyles(sBase);
   const rows = scoreTable(game);
   const t = totals(game);
+  const phases = game.settings.end.type === 'phases' ? phasesDone(game) : null;
   const many = game.participants.length > 4;
   const colW = many ? 72 : undefined;
   const cell = (key: string, text: string, style?: object) => (
@@ -177,6 +198,12 @@ function ScoreTable({ game }: { game: Game }) {
         {cell('t', usesLives(game) ? 'Leben' : 'Total', [s.first, s.totalText])}
         {game.participants.map((p) => cell(p.id, String(t[p.id]), s.totalText))}
       </View>
+      {phases ? (
+        <View style={[s.tr, s.total]}>
+          {cell('ph', 'Phasen', [s.first, s.totalText])}
+          {game.participants.map((p) => cell(p.id, `${phases[p.id]}/${phaseGoal(game)}`, s.totalText))}
+        </View>
+      ) : null}
     </View>
   );
   return many ? <ScrollView horizontal>{table}</ScrollView> : table;
@@ -192,6 +219,13 @@ function Progress({ game }: { game: Game }) {
     return (
       <Card>
         <Text style={ui.cardTitle}>{`Noch im Spiel: ${left.map((p) => p.name).join(', ')}`}</Text>
+      </Card>
+    );
+  }
+  if (end.type === 'phases' && leader.phases !== undefined) {
+    return (
+      <Card>
+        <Text style={ui.cardTitle}>{`${leader.participant.name} ${verb(leader.participant.name, 'führt', 'führen')} mit ${leader.phases} von ${end.phases} Phasen`}</Text>
       </Card>
     );
   }
@@ -228,7 +262,13 @@ function Winner({ game }: { game: Game }) {
         <Text style={s.crownText}>{top.participant.name.charAt(0)}</Text>
       </View>
       <Text style={s.winnerText}>{winnerText(game)}</Text>
-      <Text style={s.winnerSub}>{usesLives(game) ? `mit ${top.total} Leben übrig` : `mit ${top.total} Punkten`}</Text>
+      <Text style={s.winnerSub}>
+        {top.phases !== undefined
+          ? `${top.phases} von ${phaseGoal(game)} Phasen · ${top.total} Punkte`
+          : usesLives(game)
+            ? `mit ${top.total} Leben übrig`
+            : `mit ${top.total} Punkten`}
+      </Text>
     </View>
   );
 }
@@ -247,7 +287,7 @@ function Ranking({ game, compact }: { game: Game; compact?: boolean }) {
             <Text style={[ui.cardTitle, { flex: 1 }]} numberOfLines={1}>
               {e.participant.name}
             </Text>
-            <Text style={s.rankTotal}>{e.total}</Text>
+            <Text style={s.rankTotal}>{e.phases !== undefined ? `${e.phases}/${phaseGoal(game)} · ${e.total}` : e.total}</Text>
           </View>
         ))}
       </View>
@@ -260,7 +300,7 @@ function Ranking({ game, compact }: { game: Game; compact?: boolean }) {
           <Text style={s.rank}>{e.rank}</Text>
           <Avatar name={e.participant.name} color={e.participant.color} />
           <Text style={[ui.cardTitle, { flex: 1 }]}>{e.participant.name}</Text>
-          <Text style={s.rankTotal}>{e.total}</Text>
+          <Text style={s.rankTotal}>{e.phases !== undefined ? `${e.phases}/${phaseGoal(game)} · ${e.total}` : e.total}</Text>
         </Card>
       ))}
     </>
@@ -285,7 +325,6 @@ const sBase = StyleSheet.create({
   winnerText: { fontSize: 26, fontWeight: '800', color: '#fff', textAlign: 'center' },
   rank: { width: 20, fontWeight: '800', color: Colors.muted, fontSize: 16 },
   rankTotal: { fontWeight: '800', fontSize: 18, color: Colors.ink },
-  footerRow: { flexDirection: 'row', gap: 10 },
   undo: { alignSelf: 'center', padding: 8 },
   undoText: { color: Colors.danger, fontWeight: '600', fontSize: 15 },
   rankList: { backgroundColor: Colors.surface, borderRadius: 16, paddingVertical: 4 },
