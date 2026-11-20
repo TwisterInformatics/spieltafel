@@ -153,6 +153,15 @@ export async function finishGame(db: SQLiteDatabase, gameId: string): Promise<vo
   await db.runAsync('UPDATE games SET finished_at = ? WHERE id = ? AND finished_at IS NULL', Date.now(), gameId);
 }
 
+/** Abgeschlossene Partie wieder aufnehmen, optional mit neuer Endregel (z.B. ohne Ziel weiter). */
+export async function resumeGame(db: SQLiteDatabase, gameId: string, settings?: GameSettings): Promise<void> {
+  if (settings) {
+    await db.runAsync('UPDATE games SET finished_at = NULL, settings = ? WHERE id = ?', JSON.stringify(settings), gameId);
+  } else {
+    await db.runAsync('UPDATE games SET finished_at = NULL WHERE id = ?', gameId);
+  }
+}
+
 export async function deleteGame(db: SQLiteDatabase, gameId: string): Promise<void> {
   await db.withTransactionAsync(async () => {
     await db.runAsync('DELETE FROM rounds WHERE game_id = ?', gameId);

@@ -7,9 +7,9 @@ import { GameGuide } from '@/components/GameGuide';
 import { Avatar, Button, Card, Label, Screen, Title, useUi } from '@/components/ui';
 import { useLayout, useScaledStyles } from '@/constants/layout';
 import { Colors } from '@/constants/theme';
-import { createGame, deleteLastRound, finishGame } from '@/data/db';
+import { createGame, deleteLastRound, finishGame, resumeGame } from '@/data/db';
 import { useGame } from '@/data/hooks';
-import { ranking, scoreTable, totals } from '@/domain/scoring';
+import { isFinishedByRules, ranking, scoreTable, totals } from '@/domain/scoring';
 import { winnerText } from '@/domain/summary';
 import { getTemplate } from '@/domain/templates';
 import type { Game } from '@/domain/types';
@@ -52,9 +52,38 @@ export default function ScoreboardScreen() {
     router.replace(`/partie/${newId}`);
   }
 
+  // Coiffeur mit allen gespielten Spielarten hat keine offene Runde mehr.
+  const canResume = finished && !(game.settings.end.type === 'allModes' && isFinishedByRules(game));
+
+  function confirmResume() {
+    const g = game!;
+    const end = g.settings.end;
+    if (!isFinishedByRules(g)) {
+      void resumeGame(db, g.id).then(reload);
+      return;
+    }
+    const reason =
+      end.type === 'target'
+        ? `Das Ziel von ${end.target} Punkten ist schon erreicht.`
+        : end.type === 'rounds'
+          ? `Alle ${end.rounds} Runden sind gespielt.`
+          : 'Die Partie ist nach den Regeln zu Ende.';
+    Alert.alert('Partie weiterspielen?', `${reason} Die Partie läuft ohne Ziel weiter, bis du sie selbst beendest.`, [
+      { text: 'Abbrechen', style: 'cancel' },
+      {
+        text: 'Weiterspielen',
+        onPress: async () => {
+          await resumeGame(db, g.id, { ...g.settings, end: { type: 'manual' } });
+          await reload();
+        },
+      },
+    ]);
+  }
+
   const footer = finished ? (
     <>
       <Button title="Revanche" onPress={rematch} />
+      {canResume ? <Button title="Weiterspielen" variant="secondary" onPress={confirmResume} /> : null}
       <Button title="Fertig" variant="secondary" onPress={() => router.dismissTo('/')} />
     </>
   ) : (

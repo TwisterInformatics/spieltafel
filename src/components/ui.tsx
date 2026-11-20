@@ -1,5 +1,5 @@
-import { useEffect, useState, type ReactNode } from 'react';
-import { Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View, type ViewStyle } from 'react-native';
+import { useEffect, useRef, useState, type ComponentRef, type ReactNode } from 'react';
+import { Keyboard, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View, type ViewStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useLayout, useScaledStyles } from '@/constants/layout';
@@ -11,16 +11,40 @@ import { formatNumberInput, parseNumberInput, toggleSign } from './numberInput';
 // iOS: Die Zahlentastatur hat kein Minus, darum die Tastatur mit Zahlen und Satzzeichen.
 const NUMBER_KEYBOARD = Platform.OS === 'ios' ? 'numbers-and-punctuation' : 'numeric';
 
+/**
+ * Wie weit die Tastatur die View überdeckt. Android-Apps laufen randlos, dort schrumpft das
+ * Fenster nicht mehr für die Tastatur; darum selbst Platz schaffen (auch im Tablet-Dialog).
+ */
+function useKeyboardOverlap() {
+  const ref = useRef<ComponentRef<typeof View>>(null);
+  const [overlap, setOverlap] = useState(0);
+  useEffect(() => {
+    const show = Keyboard.addListener(Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow', (e) => {
+      const keyboardTop = e.endCoordinates.screenY;
+      ref.current?.measureInWindow((_x, y, _w, h) => setOverlap(Math.max(0, y + h - keyboardTop)));
+    });
+    const hide = Keyboard.addListener(Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide', () => setOverlap(0));
+    return () => {
+      show.remove();
+      hide.remove();
+    };
+  }, []);
+  return { ref, overlap };
+}
+
 export function Screen({ children, footer }: { children: ReactNode; footer?: ReactNode }) {
   const styles = useUi();
   const width = useContentWidth();
+  const { ref, overlap } = useKeyboardOverlap();
   return (
-    <SafeAreaView style={styles.screen} edges={['bottom', 'left', 'right']}>
-      <ScrollView contentContainerStyle={[styles.content, width]} keyboardShouldPersistTaps="handled">
-        {children}
-      </ScrollView>
-      {footer ? <View style={[styles.footer, width]}>{footer}</View> : null}
-    </SafeAreaView>
+    <View ref={ref} style={[styles.screen, { paddingBottom: overlap }]}>
+      <SafeAreaView style={styles.screen} edges={overlap ? ['left', 'right'] : ['bottom', 'left', 'right']}>
+        <ScrollView contentContainerStyle={[styles.content, width]} keyboardShouldPersistTaps="handled">
+          {children}
+        </ScrollView>
+        {footer ? <View style={[styles.footer, width]}>{footer}</View> : null}
+      </SafeAreaView>
+    </View>
   );
 }
 
@@ -127,10 +151,12 @@ export function NumberField({
   const { k } = useLayout();
   // Eigener Text, damit ein angefangenes "-" stehen bleibt, bis die Ziffern kommen.
   const [text, setText] = useState(() => formatNumberInput(value));
-  useEffect(() => {
-    // Wert von aussen geändert (z.B. Formular zurückgesetzt): Feld nachziehen.
-    setText((current) => (parseNumberInput(current).value === value ? current : formatNumberInput(value)));
-  }, [value]);
+  // Wert von aussen geändert (z.B. Formular zurückgesetzt): Feld beim Rendern nachziehen.
+  const [shownValue, setShownValue] = useState(value);
+  if (value !== shownValue) {
+    setShownValue(value);
+    if (parseNumberInput(text).value !== value) setText(formatNumberInput(value));
+  }
   const apply = (parsed: { text: string; value: number | null }) => {
     setText(parsed.text);
     onChange(parsed.value);
