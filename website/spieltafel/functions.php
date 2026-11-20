@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'SPIELTAFEL_VERSION', '1.1.0' );
+define( 'SPIELTAFEL_VERSION', '1.2.0' );
 define( 'SPIELTAFEL_DIR', get_template_directory() );
 define( 'SPIELTAFEL_URI', get_template_directory_uri() );
 
@@ -23,6 +23,7 @@ require SPIELTAFEL_DIR . '/inc/spieltreff/actions.php';
 require SPIELTAFEL_DIR . '/inc/spieltreff/accounts.php';
 require SPIELTAFEL_DIR . '/inc/spieltreff/admin.php';
 require SPIELTAFEL_DIR . '/inc/spieltreff/share.php';
+require SPIELTAFEL_DIR . '/inc/spieltreff/campaign.php';
 require SPIELTAFEL_DIR . '/inc/spieltreff/testaccounts.php';
 
 add_action(

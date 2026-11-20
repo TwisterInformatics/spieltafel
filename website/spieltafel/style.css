@@ -3,7 +3,7 @@ Theme Name: Spieltafel
 Theme URI: https://github.com/TwisterInformatics/spieltafel
 Author: Spieltafel
 Description: Webseite zur App Spieltafel: alle Spiele mit Kurzanleitung, Funktionen der App, ein Formular für Spielwünsche und der Spieltreff zum Finden von Mitspielern. Die Spiele kommen direkt aus der App (data/games.json).
-Version: 1.1.0
+Version: 1.2.0
 Requires at least: 6.3
 Requires PHP: 7.4
 License: GNU General Public License v2 or later
@@ -418,6 +418,48 @@ a.st-tag:hover { background: var(--primary-light); }
 .st-share-btn[disabled] { opacity: .6; cursor: wait; }
 .st-share-hint { background: var(--hint-bg); color: var(--hint-ink); padding: 10px 12px; border-radius: 10px; }
 
+/* Spieltreff-Kampagne «Zurück an den Tisch» */
+.st-hero { background: var(--primary); color: #fff; padding: 72px 0; position: relative; overflow: hidden; }
+.st-hero::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 12% 0%, rgba(255,255,255,.08), transparent 45%), radial-gradient(circle at 100% 100%, rgba(0,0,0,.12), transparent 50%); pointer-events: none; }
+.st-hero-grid { position: relative; display: grid; grid-template-columns: 1.1fr .9fr; gap: 48px; align-items: center; }
+.st-hero h1, .st-hero h2 { color: #fff; font-size: clamp(2.5rem, 5.6vw, 4rem); line-height: 1.05; letter-spacing: -.02em; margin: 16px 0 18px; }
+.st-hero .lead { color: #dcefe4; font-size: 1.18rem; max-width: 34em; margin: 0 0 22px; }
+.st-pill { display: inline-block; background: var(--gold); color: var(--ink); font-size: .8rem; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; padding: 6px 12px; border-radius: 999px; }
+.st-hero-note { display: inline-block; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18); color: #fff; border-radius: var(--radius-sm); padding: 10px 16px; margin: 0 0 14px; font-weight: 600; }
+.st-hero .st-small a { color: #fff; }
+.st-hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
+.btn-light { background: #fff; border-color: #fff; color: var(--primary-dark); }
+.btn-light:hover { background: var(--gold); border-color: var(--gold); color: var(--ink); }
+.btn-ghost { background: transparent; border-color: rgba(255,255,255,.7); color: #fff; }
+.btn-ghost:hover { background: rgba(255,255,255,.12); border-color: #fff; color: #fff; }
+.st-hero-art { display: grid; place-items: center; }
+.st-hero-art .st-table { width: 100%; max-width: 480px; height: auto; overflow: visible; }
+.st-notices { padding-top: 24px; }
+.st-notices > * { margin-bottom: 0; }
+
+.st-manifest-title { font-size: clamp(1.6rem, 3vw, 2.1rem); margin: 0 0 22px; }
+.st-pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.st-pillar { background: var(--bg); border-radius: var(--radius); padding: 24px; }
+.section:not(.section-alt) .st-pillar { background: var(--surface); border: 1px solid var(--border); }
+.st-pillar-icon { width: 48px; height: 48px; border-radius: 14px; background: var(--primary-light); display: grid; place-items: center; font-size: 1.5rem; margin-bottom: 12px; }
+.st-pillar h3 { margin: 0 0 6px; font-size: 1.12rem; }
+.st-pillar p { margin: 0; color: var(--muted); font-size: .97rem; }
+.st-stack { display: flex; gap: 18px; align-items: center; margin-top: 18px; background: var(--hint-bg); color: var(--hint-ink); border-radius: var(--radius); padding: 18px 22px; }
+.st-stack strong { color: var(--ink); display: block; margin-bottom: 2px; }
+.st-stack p { margin: 0; }
+.st-stack-icon { width: 56px; height: 56px; flex: none; }
+.st-wink { margin: 16px 0 0; color: var(--muted); font-style: italic; font-size: .95rem; }
+.st-after-hero .st-teaser-list { grid-template-columns: 1fr 1fr; }
+.st-after-hero .st-manifest + .st-manifest-title { margin-top: 56px; }
+.section:not(.section-alt) .st-teaser-list li { background: var(--surface); }
+@media (max-width: 860px) {
+	.st-hero { padding: 48px 0; }
+	.st-hero-grid { grid-template-columns: 1fr; gap: 28px; }
+	.st-hero-art { order: -1; }
+	.st-hero-art .st-table { max-width: 300px; }
+	.st-pillars, .st-after-hero .st-teaser-list { grid-template-columns: 1fr; }
+	.st-stack { align-items: flex-start; }
+}
 /* Testkonten (Admin) */
 .st-testkonten { margin-bottom: 18px; border-color: var(--gold); }
 .st-testkonten h3 { margin-top: 22px; }

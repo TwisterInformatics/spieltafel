@@ -147,6 +147,25 @@ function spieltreff_settings_page() {
 			<li><a href="<?php echo esc_url( spieltreff_rules_url() ); ?>"><?php esc_html_e( 'Regeln und Nutzungsbedingungen (bitte prüfen und anpassen)', 'spieltafel' ); ?></a></li>
 			<li><a href="<?php echo esc_url( admin_url( 'options-privacy.php?tab=policyguide' ) ); ?>"><?php esc_html_e( 'Textvorschlag für die Datenschutzerklärung', 'spieltafel' ); ?></a></li>
 		</ul>
+		<h2><?php esc_html_e( 'Bilder für Social Media', 'spieltafel' ); ?></h2>
+		<p><?php esc_html_e( 'Fertige Bilder zur Kampagne «Zurück an den Tisch» zum Posten auf Instagram, Facebook oder WhatsApp. Die Adresse der Webseite steht schon drauf. Vor der Freischaltung mit «Bald neu», danach mit «Jetzt mitspielen».', 'spieltafel' ); ?></p>
+		<?php
+		$formats = spieltreff_campaign_formats();
+		foreach ( array( 'bald' => __( 'Vor dem Start', 'spieltafel' ), 'live' => __( 'Nach der Freischaltung', 'spieltafel' ) ) as $phase => $phase_label ) :
+			?>
+			<h3><?php echo esc_html( $phase_label ); ?></h3>
+			<div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start">
+				<?php foreach ( spieltreff_slogans() as $nr => $slogan ) : ?>
+					<div style="background:#fff;border:1px solid #dcdcde;border-radius:8px;padding:10px;width:240px">
+						<img src="<?php echo esc_url( spieltreff_campaign_url( 'post', $nr, $phase ) ); ?>" alt="" width="220" height="220" loading="lazy" style="display:block;border-radius:4px">
+						<p style="margin:8px 0 4px"><strong><?php echo esc_html( $slogan ); ?></strong></p>
+						<?php foreach ( $formats as $f => $info ) : ?>
+							<a href="<?php echo esc_url( add_query_arg( 'dl', 1, spieltreff_campaign_url( $f, $nr, $phase ) ) ); ?>"><?php echo esc_html( $info[2] ); ?></a><br>
+						<?php endforeach; ?>
+					</div>
+				<?php endforeach; ?>
+			</div>
+		<?php endforeach; ?>
 	</div>
 	<?php
 }

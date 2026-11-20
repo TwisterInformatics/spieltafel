@@ -37,22 +37,20 @@ $base    = spieltreff_url();
 $keep    = array_filter( array_diff_key( $filter, array( 'typ' => 1, 'seite' => 1 ) ) );
 $filters = (bool) $keep;
 ?>
-<section class="section st-head">
+<?php
+$open_angebote = (int) spieltreff_query( array( 'typ' => 'angebot', 'anzahl' => 1 ) )->found_posts;
+$open_gesuche  = (int) spieltreff_query( array( 'typ' => 'gesuch', 'anzahl' => 1 ) )->found_posts;
+ob_start();
+get_template_part( 'template-parts/spieltreff/testbanner' );
+spieltreff_notice();
+$notices = trim( (string) ob_get_clean() );
+if ( $notices ) :
+	?>
+	<div class="wrap st-notices"><?php echo $notices; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- bereits escaped. ?></div>
+<?php endif; ?>
+<?php get_template_part( 'template-parts/spieltreff/hero', null, array( 'angebote' => $open_angebote, 'gesuche' => $open_gesuche ) ); ?>
+<section class="section st-head" id="eintraege">
 	<div class="wrap">
-		<?php get_template_part( 'template-parts/spieltreff/testbanner' ); ?>
-		<?php spieltreff_notice(); ?>
-		<div class="st-intro">
-			<div>
-				<span class="eyebrow"><?php esc_html_e( 'Spieltreff', 'spieltafel' ); ?></span>
-				<h1><?php esc_html_e( 'Mitspieler finden', 'spieltafel' ); ?></h1>
-				<p class="lead"><?php esc_html_e( 'Jassrunde, Brettspielabend oder eine feste Gruppe für jeden Donnerstag: Hier findest du Leute, die gerne spielen. Mach mit bei einem Angebot oder schreib selbst eines aus.', 'spieltafel' ); ?></p>
-			</div>
-			<div class="st-intro-actions">
-				<a class="btn" href="<?php echo esc_url( spieltreff_url( 'neu', array( 'typ' => 'angebot' ) ) ); ?>"><?php esc_html_e( 'Spielabend anbieten', 'spieltafel' ); ?></a>
-				<a class="btn btn-secondary" href="<?php echo esc_url( spieltreff_url( 'neu', array( 'typ' => 'gesuch' ) ) ); ?>"><?php esc_html_e( 'Mitspieler suchen', 'spieltafel' ); ?></a>
-			</div>
-		</div>
-
 		<nav class="st-tabs" aria-label="<?php esc_attr_e( 'Angebote oder Gesuche', 'spieltafel' ); ?>">
 			<?php foreach ( array( 'angebot' => __( 'Angebote', 'spieltafel' ), 'gesuch' => __( 'Gesuche', 'spieltafel' ) ) as $typ => $label ) : ?>
 				<a href="<?php echo esc_url( add_query_arg( array_merge( $keep, array( 'typ' => $typ ) ), $base ) ); ?>" <?php echo $filter['typ'] === $typ ? 'aria-current="page"' : ''; ?>>
@@ -122,6 +120,11 @@ $filters = (bool) $keep;
 		<?php endif; ?>
 
 		<?php get_template_part( 'template-parts/spieltreff/how' ); ?>
+	</div>
+</section>
+<section class="section section-alt st-after-list">
+	<div class="wrap">
+		<?php get_template_part( 'template-parts/spieltreff/manifest', null, array( 'heading' => 'h2' ) ); ?>
 	</div>
 </section>
 <?php

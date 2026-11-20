@@ -42,7 +42,7 @@ function spieltreff_setting( $key ) {
 
 /** Text des Hinweises vor dem Start. */
 function spieltreff_default_teaser() {
-	return __( 'Bald findest du hier Leute zum Spielen: Jassrunden, Brettspielabende und feste Gruppen in deiner Region. Biete selbst einen Spielabend an oder melde dich bei anderen an.', 'spieltafel' );
+	return __( 'Wann hast du zuletzt gejasst, bis jemand gähnt? Bald findest du hier Leute, die lieber Karten mischen als scrollen: Jassrunden, Brettspielabende und feste Gruppen in deiner Region.', 'spieltafel' );
 }
 
 /** Für alle freigeschaltet? */
