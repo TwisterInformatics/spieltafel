@@ -116,6 +116,70 @@
 		update();
 	});
 
+	/* Teilen: Link kopieren und Bild für Instagram. */
+	function copy(text) {
+		if (navigator.clipboard && window.isSecureContext) {
+			return navigator.clipboard.writeText(text).catch(function () {});
+		}
+		var area = document.createElement('textarea');
+		area.value = text;
+		area.style.position = 'fixed';
+		area.style.opacity = '0';
+		document.body.appendChild(area);
+		area.select();
+		try { document.execCommand('copy'); } catch (e) { /* nichts */ }
+		document.body.removeChild(area);
+		return Promise.resolve();
+	}
+
+	document.querySelectorAll('[data-share]').forEach(function (box) {
+		var url = box.dataset.url;
+		var copyBtn = box.querySelector('[data-copy-link]');
+		var igBtn = box.querySelector('[data-share-image]');
+		var hint = box.querySelector('[data-ig-hint]');
+
+		if (copyBtn) {
+			copyBtn.addEventListener('click', function () {
+				copy(url).then(function () {
+					var label = copyBtn.querySelector('span');
+					var old = label.textContent;
+					label.textContent = copyBtn.dataset.done;
+					setTimeout(function () { label.textContent = old; }, 2000);
+				});
+			});
+		}
+
+		if (igBtn) {
+			igBtn.addEventListener('click', function () {
+				igBtn.disabled = true;
+				fetch(igBtn.dataset.shareImage, { credentials: 'same-origin' })
+					.then(function (r) {
+						if (!r.ok) throw new Error('bild');
+						return r.blob();
+					})
+					.then(function (blob) {
+						var file = new File([blob], 'spieltreff.png', { type: 'image/png' });
+						// Auf dem Handy: Teilen-Menü mit Bild, dort Instagram (Story oder Beitrag) wählen.
+						if (navigator.canShare && navigator.canShare({ files: [file] })) {
+							copy(url);
+							return navigator.share({ files: [file], title: box.dataset.title, text: url }).catch(function () {});
+						}
+						// Am Computer: Bild herunterladen, Link kopieren, Hinweis zeigen.
+						var a = document.createElement('a');
+						a.href = URL.createObjectURL(blob);
+						a.download = 'spieltreff-instagram.png';
+						document.body.appendChild(a);
+						a.click();
+						a.remove();
+						copy(url);
+						if (hint) hint.hidden = false;
+					})
+					.catch(function () { window.open(igBtn.dataset.shareImage, '_blank'); })
+					.then(function () { igBtn.disabled = false; });
+			});
+		}
+	});
+
 	/* Rückfrage vor Abmelden, Absagen und Löschen. */
 	document.querySelectorAll('form[data-confirm]').forEach(function (form) {
 		form.addEventListener('submit', function (e) {

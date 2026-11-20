@@ -400,3 +400,20 @@ a.st-tag:hover { background: var(--primary-light); }
 .st-delete { margin-top: 16px; }
 .st-delete summary { color: var(--danger); cursor: pointer; font-weight: 600; }
 .st-delete form { margin-top: 12px; }
+
+/* Teilen */
+.st-share h2 { font-size: 1.1rem; margin-bottom: 12px; }
+.st-share-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+.st-share-btn {
+	display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 12px;
+	border-radius: 12px; border: 1px solid var(--border); background: var(--surface); color: var(--ink);
+	font: inherit; font-size: .93rem; font-weight: 700; text-decoration: none; cursor: pointer;
+}
+.st-share-btn:hover { background: var(--surface-muted); color: var(--ink); }
+.st-share-btn span { white-space: nowrap; }
+.st-share-btn svg { width: 20px; height: 20px; fill: currentColor; flex: none; }
+.st-share-fb svg { fill: #1877f2; }
+.st-share-ig svg { fill: #d62976; }
+.st-share-wa svg { fill: #25d366; }
+.st-share-btn[disabled] { opacity: .6; cursor: wait; }
+.st-share-hint { background: var(--hint-bg); color: var(--hint-ink); padding: 10px 12px; border-radius: 10px; }

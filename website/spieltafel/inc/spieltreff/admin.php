@@ -370,6 +370,8 @@ add_action(
 				__( 'Zum Schutz vor Spam löst dein Browser bei Formularen eine kleine Rechenaufgabe. Dabei werden keine Daten an Dritte übermittelt und keine Cookies gesetzt. Zur Begrenzung von Missbrauch speichern wir einen verschlüsselten Wert (Hash) deiner IP-Adresse für höchstens 24 Stunden. Gemeldete Einträge prüfen wir und können sie oder Konten sperren.', 'spieltafel' ) .
 				'</p><h2>' . __( 'Spieltreff: E-Mails', 'spieltafel' ) . '</h2><p>' .
 				__( 'Wir schicken dir E-Mails zu deinem Konto und zu deinen Einträgen und Anmeldungen, zum Beispiel wenn sich jemand anmeldet oder deine Anmeldung bestätigt wird. Nachrichten eines Erstellers an alle Teilnehmenden versenden wir in seinem Auftrag; Antworten gehen direkt an ihn.', 'spieltafel' ) .
+				'</p><h2>' . __( 'Spieltreff: Teilen auf Facebook, Instagram und WhatsApp', 'spieltafel' ) . '</h2><p>' .
+				__( 'Die Knöpfe zum Teilen sind einfache Links. Wir laden keine Skripte, Knöpfe oder Pixel von Meta (Facebook, Instagram, WhatsApp). Erst wenn du selbst auf einen Knopf tippst, öffnet sich der jeweilige Dienst und es gelten dessen Datenschutzbestimmungen. Geteilt werden nur Titel, Zeit, Ort und Spiele eines Eintrags, nie die genaue Adresse.', 'spieltafel' ) .
 				'</p>'
 			)
 		);

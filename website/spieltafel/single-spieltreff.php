@@ -208,6 +208,11 @@ $hidden  = function ( $do, $extra = array() ) use ( $e ) {
 						</form>
 					<?php endif; ?>
 				</div>
+				<?php
+				if ( spieltreff_shareable( $e ) ) {
+					get_template_part( 'template-parts/spieltreff/share', null, array( 'entry' => $e ) );
+				}
+				?>
 				<?php if ( $uid && ! $is_own && 'publish' === $e['status'] ) : ?>
 					<details class="st-report">
 						<summary><?php esc_html_e( 'Eintrag melden', 'spieltafel' ); ?></summary>
