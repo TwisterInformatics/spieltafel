@@ -14,9 +14,9 @@ $next = spieltreff_query( array( 'typ' => 'angebot', 'anzahl' => 3 ) );
 <section class="section section-alt" id="spieltreff">
 	<div class="wrap">
 		<div class="section-head">
-			<span class="eyebrow"><?php esc_html_e( 'Spieltreff', 'spieltafel' ); ?><?php echo spieltreff_is_live() ? '' : ' · ' . esc_html__( 'Testbetrieb', 'spieltafel' ); ?></span>
-			<h2><?php esc_html_e( 'Mitspieler finden', 'spieltafel' ); ?></h2>
-			<p><?php esc_html_e( 'Jassrunde, Brettspielabend oder feste Gruppe: Biete einen Spielabend an oder melde dich bei anderen an.', 'spieltafel' ); ?></p>
+			<span class="eyebrow"><?php esc_html_e( 'Spieltreff · Mitspieler finden', 'spieltafel' ); ?><?php echo spieltreff_is_live() ? '' : ' · ' . esc_html__( 'Testbetrieb', 'spieltafel' ); ?></span>
+			<h2><?php echo esc_html( spieltreff_slogans()[1] ); ?></h2>
+			<p><?php esc_html_e( 'Weniger scrollen, mehr spielen: Im Spieltreff findest du Leute in deiner Nähe für Jassrunden, Brettspielabende und feste Gruppen. Biete einen Spielabend an oder melde dich bei anderen an.', 'spieltafel' ); ?></p>
 		</div>
 		<?php if ( $next->have_posts() ) : ?>
 			<div class="st-list">

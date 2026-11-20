@@ -50,14 +50,21 @@ function spieltreff_image_url( $post_id, $format = 'og' ) {
 add_action(
 	'wp_head',
 	function () {
-		if ( is_post_type_archive( SPIELTREFF_TYPE ) && spieltreff_is_live() ) {
+		if ( is_post_type_archive( SPIELTREFF_TYPE ) ) {
 			$tags = array(
-				'og:type'        => 'website',
-				'og:title'       => __( 'Spieltreff: Mitspieler finden', 'spieltafel' ),
-				'og:description' => __( 'Jassrunden, Brettspielabende und feste Gruppen in deiner Region. Mach mit oder biete selbst einen Spielabend an.', 'spieltafel' ),
-				'og:url'         => spieltreff_url(),
-				'og:image'       => spieltafel_img( 'app-icon.png' ),
+				'og:type'         => 'website',
+				'og:title'        => spieltreff_is_live() ? __( 'Spieltreff: Zurück an den Tisch', 'spieltafel' ) : __( 'Bald neu: der Spieltreff', 'spieltafel' ),
+				'og:description'  => spieltreff_is_live()
+					? __( 'Weniger scrollen, mehr spielen: Jassrunden, Brettspielabende und feste Gruppen in deiner Region. Mach mit oder lade selbst ein.', 'spieltafel' )
+					: __( 'Weniger scrollen, mehr spielen: Bald findest du hier Leute für Jassrunden, Brettspielabende und feste Gruppen in deiner Region.', 'spieltafel' ),
+				'og:url'          => spieltreff_url(),
+				'og:image'        => spieltreff_campaign_url( 'og', 1 ),
+				'og:image:width'  => '1200',
+				'og:image:height' => '630',
+				'og:image:alt'    => __( 'Zurück an den Tisch. Ein Spieltisch mit Karten und Würfeln, das Handy liegt umgedreht daneben.', 'spieltafel' ),
+				'twitter:card'    => 'summary_large_image',
 			);
+			printf( '<meta name="description" content="%s">' . "\n", esc_attr( $tags['og:description'] ) );
 		} elseif ( is_singular( SPIELTREFF_TYPE ) && spieltreff_can_view() ) {
 			$e = spieltreff_entry( get_queried_object() );
 			if ( ! spieltreff_shareable( $e ) ) {
@@ -276,6 +283,13 @@ function spieltreff_render_image( $e, $format ) {
 		if ( $extra ) {
 			$y += 110;
 			$text( implode( ' · ', $extra ), 38, $m, $y, $green, $bold );
+		}
+		// Kernbotschaft im freien Platz über dem Fuss.
+		if ( $y < 1400 ) {
+			$tag = spieltreff_slogans()[3];
+			$box = imagettfbbox( 34, 0, $bold, $tag );
+			spieltreff_round_rect( $im, $m, 1470, $m + ( $box[2] - $box[0] ) + 64, 1560, 45, $light );
+			$text( $tag, 34, $m + 32, 1528, $green, $bold );
 		}
 	}
 
