@@ -23,6 +23,7 @@ require SPIELTAFEL_DIR . '/inc/spieltreff/actions.php';
 require SPIELTAFEL_DIR . '/inc/spieltreff/accounts.php';
 require SPIELTAFEL_DIR . '/inc/spieltreff/admin.php';
 require SPIELTAFEL_DIR . '/inc/spieltreff/share.php';
+require SPIELTAFEL_DIR . '/inc/spieltreff/testaccounts.php';
 
 add_action(
 	'after_setup_theme',
