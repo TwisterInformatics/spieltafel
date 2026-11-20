@@ -13,7 +13,7 @@ Der Ordner `spieltafel/` ist ein klassisches WordPress-Theme für die Webseite z
 
 1. Zip hochladen unter *Design → Themes → Theme hinzufügen → Theme hochladen*, dann aktivieren.
 2. Beim Aktivieren legt das Theme die Seiten «Spiele & Anleitungen» und «Spiel wünschen» an und stellt die Permalinks auf `/%postname%/`, falls noch «Einfach» eingestellt war.
-3. Unter *Design → Customizer → Spieltafel*: Titel und Einleitung, Store-Links, E-Mail für Spielwünsche.
+3. Unter *Design → Customizer → Spieltafel*: Titel und Einleitung, Store-Links, Empfänger sowie Absender-Adresse und -Name der Wunsch-E-Mails. Die Absender-Adresse sollte zur Domain der Website gehören, sonst landen die E-Mails leicht im Spam.
 4. Unter *Einstellungen → Datenschutz* eine Datenschutzseite wählen. Das Theme schlägt dort einen Text für das Formular vor. Für die Schweiz zusätzlich eine Seite mit der Adresse `impressum` anlegen, sie erscheint dann automatisch in der Fusszeile.
 5. Menüs sind optional. Ohne eigenes Menü zeigt die Kopfzeile Funktionen, Spiele & Anleitungen und Spiel wünschen.
 

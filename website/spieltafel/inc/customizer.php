@@ -14,6 +14,8 @@ function spieltafel_mod_defaults() {
 		'app_store_url' => '',
 		'play_url'      => '',
 		'wish_email'    => '',
+		'wish_from'     => '',
+		'wish_from_name' => '',
 		'wish_notify'   => true,
 	);
 }
@@ -42,6 +44,8 @@ add_action(
 			'app_store_url' => array( __( 'Link zum App Store (leer = «bald»)', 'spieltafel' ), 'url', 'esc_url_raw' ),
 			'play_url'      => array( __( 'Link zu Google Play (leer = «bald»)', 'spieltafel' ), 'url', 'esc_url_raw' ),
 			'wish_email'    => array( __( 'Spielwünsche an diese E-Mail (leer = Admin-E-Mail)', 'spieltafel' ), 'email', 'sanitize_email' ),
+			'wish_from'     => array( __( 'Absender-Adresse der Wunsch-E-Mails (leer = WordPress-Standard)', 'spieltafel' ), 'email', 'sanitize_email' ),
+			'wish_from_name' => array( __( 'Absender-Name der Wunsch-E-Mails (leer = Name der Website)', 'spieltafel' ), 'text', 'sanitize_text_field' ),
 		);
 		foreach ( $fields as $key => $f ) {
 			$wp_customize->add_setting(
