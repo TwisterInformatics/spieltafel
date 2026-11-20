@@ -18,7 +18,7 @@ $games = spieltafel_games();
 			<p>
 				<?php
 				/* translators: %d: Anzahl Spiele */
-				echo esc_html( sprintf( __( 'Diese %d Spiele kennt die Spieltafel. Zu jedem gibt es eine Kurzanleitung, die auch in der App steht, und wo vorhanden einen Link zur ausführlichen Anleitung.', 'spieltafel' ), count( $games ) ) );
+				echo esc_html( sprintf( __( 'Diese %d Spiele kennt die Spieltafel, weitere sind mit «Bald» markiert. Zu jedem gibt es eine Kurzanleitung, die auch in der App steht, und wo vorhanden einen Link zur ausführlichen Anleitung.', 'spieltafel' ), count( spieltafel_available_games() ) ) );
 				?>
 			</p>
 		</div>
