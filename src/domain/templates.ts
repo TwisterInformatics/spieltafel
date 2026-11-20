@@ -84,7 +84,10 @@ export const TEMPLATES: GameTemplate[] = [
       'Zusammen gibt es pro Spiel 157 Punkte.',
       'Wer nach allen Runden die wenigsten Strafpunkte hat, gewinnt.',
     ],
-    rules: { url: 'https://www.pagat.com/jass/differenzler.html', source: 'Pagat (englisch)' },
+    rules: {
+      url: 'https://www.bern.ch/mediencenter/medienmitteilungen/aktuell_ptk/2011-04-donnschtigjass/downloads/14donnschtigjass_differenzler_tipps.pdf',
+      source: 'Donnschtig-Jass (PDF)',
+    },
   },
   {
     id: 'jass-coiffeur',
@@ -126,7 +129,7 @@ export const TEMPLATES: GameTemplate[] = [
       'Bei der vorletzten Karte «Tschau» rufen, bei der letzten «Sepp». Wer es vergisst, zieht Strafkarten.',
       'In der App: Wer fertig ist, bekommt 0. Die anderen zählen ihre Restkarten. Wenig gewinnt.',
     ],
-    rules: { url: 'https://de.wikipedia.org/wiki/Tschau_Sepp', source: 'Wikipedia' },
+    rules: { url: 'https://de.wikipedia.org/wiki/Mau-Mau_(Kartenspiel)', source: 'Wikipedia (Mau-Mau)' },
   },
   {
     id: 'arschloechle',
@@ -166,7 +169,10 @@ export const TEMPLATES: GameTemplate[] = [
       'Merkt das andere Team es zuerst, ruft es «Gegen-Gämsch!» und holt den Punkt.',
       'Üblich: Gämsch 1 Punkt, Doppel-Gämsch 2, falscher Ruf 1 für die Gegner, erratenes Zeichen 2. In der App pro Team einen Namen eintragen.',
     ],
-    rules: { url: 'https://de.wikipedia.org/wiki/G%C3%A4msch', source: 'Wikipedia' },
+    rules: {
+      url: 'https://cdn.simba-dickie-group.de/downloads/601105105/601105105_Gaemsh_Spielregel_Rules-online_DE-EN.pdf',
+      source: 'Spielregel Zoch (PDF)',
+    },
   },
   {
     id: 'schwimmen',
@@ -226,7 +232,7 @@ export const TEMPLATES: GameTemplate[] = [
       'Häufige Wertung: Ansage genau getroffen gibt 10 Punkte plus 1 pro Stich, sonst nur 1 pro Stich.',
       'Wer am Schluss die meisten Punkte hat, gewinnt.',
     ],
-    rules: { url: 'https://www.pagat.com/exact/ohhell.html', source: 'Pagat (englisch)' },
+    rules: { url: 'https://de.wikipedia.org/wiki/Stiche-Raten', source: 'Wikipedia' },
   },
   {
     id: 'uno',

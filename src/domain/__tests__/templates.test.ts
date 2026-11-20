@@ -23,6 +23,16 @@ describe('Spielvorlagen', () => {
     }
   });
 
+  it('verlinken nur deutschsprachige Anleitungen', () => {
+    for (const t of TEMPLATES) {
+      if (!t.rules) continue;
+      // Wikipedia nur in Deutsch, Pagat nur die deutsche Übersetzung unter /de/
+      expect(t.rules.url).not.toMatch(/\/\/(?!de\.)[a-z-]+\.wikipedia\.org/);
+      expect(t.rules.url).not.toMatch(/pagat\.com\/(?!de\/)/);
+      expect(t.rules.source).not.toMatch(/englisch/i);
+    }
+  });
+
   it('findet die neuen Kartenspiele über Namen und Varianten', () => {
     expect(searchTemplates('tschau').map((t) => t.id)).toEqual(['tschau-sepp']);
     expect(searchTemplates('mau mau').map((t) => t.id)).toEqual(['tschau-sepp']);
