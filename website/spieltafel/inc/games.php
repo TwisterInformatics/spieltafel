@@ -32,6 +32,18 @@ function spieltafel_game( $id ) {
 	return null;
 }
 
+/** Spiele, die schon in der App im Store sind (ohne «bald»). */
+function spieltafel_available_games() {
+	return array_values(
+		array_filter(
+			spieltafel_games(),
+			function ( $game ) {
+				return empty( $game['upcoming'] );
+			}
+		)
+	);
+}
+
 /** Kategorien in der Reihenfolge, in der sie zuerst vorkommen. */
 function spieltafel_categories() {
 	return array_values( array_unique( wp_list_pluck( spieltafel_games(), 'category' ) ) );

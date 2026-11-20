@@ -5,6 +5,10 @@ import { fileURLToPath } from 'node:url';
 import { TEMPLATES } from '../../src/domain/templates.ts';
 import { TemplateColors } from '../../src/constants/theme.ts';
 
+// Spiele, die im Code (main) schon da sind, aber noch nicht in der App-Version im Store.
+// Nach dem nächsten Release hier entfernen und npm run website:data ausführen.
+const NOCH_NICHT_IM_STORE = ['uno', 'phase-10', 'wizard', 'maexle'];
+
 function players(t) {
   if (t.teams) return `${t.teams} Teams zu ${t.teamSize ?? 2}`;
   if (t.maxPlayers === null) return `ab ${t.minPlayers} ${t.minPlayers === 1 ? 'Spieler' : 'Spielern'}`;
@@ -47,6 +51,7 @@ const games = TEMPLATES.map((t) => ({
   modes: t.modes ?? [],
   guide: t.guide,
   rules: t.rules ?? null,
+  upcoming: NOCH_NICHT_IM_STORE.includes(t.id),
 }));
 
 const out = fileURLToPath(new URL('../spieltafel/data/games.json', import.meta.url));

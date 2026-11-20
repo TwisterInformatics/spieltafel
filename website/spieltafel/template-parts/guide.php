@@ -14,9 +14,12 @@ $heading = $args['heading'] ?? 'h2';
 		<span class="game-dot" style="background:<?php echo esc_attr( $game['color'] ); ?>" aria-hidden="true"><?php echo esc_html( spieltafel_initial( $game ) ); ?></span>
 		<div>
 			<<?php echo esc_html( $heading ); ?>><?php echo esc_html( $game['name'] ); ?></<?php echo esc_html( $heading ); ?>>
-			<span class="meta"><?php echo esc_html( $game['category'] ); ?></span>
+			<span class="meta"><?php echo esc_html( $game['category'] ); ?><?php if ( ! empty( $game['upcoming'] ) ) : ?> · <span class="badge-soon"><?php esc_html_e( 'Bald', 'spieltafel' ); ?></span><?php endif; ?></span>
 		</div>
 	</div>
+	<?php if ( ! empty( $game['upcoming'] ) ) : ?>
+		<p class="hint"><?php esc_html_e( 'Kommt mit der nächsten Version der App. Bis dahin lässt sich das Spiel mit der freien Zählung festhalten.', 'spieltafel' ); ?></p>
+	<?php endif; ?>
 	<ul class="facts">
 		<li><?php echo esc_html( $game['players'] ); ?></li>
 		<li><?php echo esc_html( $game['winner'] ); ?></li>

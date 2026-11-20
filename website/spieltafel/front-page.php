@@ -18,7 +18,7 @@ $shots = spieltafel_screenshots();
 			<p class="hero-note">
 				<?php
 				/* translators: %d: Anzahl Spiele */
-				echo esc_html( sprintf( __( 'Kostenlos · %d Spiele mit Kurzanleitung · kein Konto, keine Werbung', 'spieltafel' ), count( spieltafel_games() ) ) );
+				echo esc_html( sprintf( __( 'Kostenlos · %d Spiele mit Kurzanleitung · kein Konto, keine Werbung', 'spieltafel' ), count( spieltafel_available_games() ) ) );
 				?>
 			</p>
 		</div>
@@ -84,7 +84,7 @@ $shots = spieltafel_screenshots();
 			<h2>
 				<?php
 				/* translators: %d: Anzahl Spiele */
-				echo esc_html( sprintf( __( '%d Spiele, eine Tafel', 'spieltafel' ), count( spieltafel_games() ) ) );
+				echo esc_html( sprintf( __( '%d Spiele, eine Tafel', 'spieltafel' ), count( spieltafel_available_games() ) ) );
 				?>
 			</h2>
 			<p><?php esc_html_e( 'Jedes Spiel kennt seine Wertung. Tippe ein Spiel an für die Kurzanleitung.', 'spieltafel' ); ?></p>

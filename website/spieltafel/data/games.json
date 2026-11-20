@@ -24,7 +24,8 @@
     "rules": {
       "url": "https://de.wikipedia.org/wiki/Skyjo",
       "source": "Wikipedia"
-    }
+    },
+    "upcoming": false
   },
   {
     "id": "jass-schieber",
@@ -78,7 +79,8 @@
     "rules": {
       "url": "https://www.pagat.com/de/jass/schieber.html",
       "source": "Pagat"
-    }
+    },
+    "upcoming": false
   },
   {
     "id": "jass-differenzler",
@@ -107,7 +109,8 @@
     "rules": {
       "url": "https://www.pagat.com/jass/differenzler.html",
       "source": "Pagat (englisch)"
-    }
+    },
+    "upcoming": false
   },
   {
     "id": "jass-coiffeur",
@@ -160,7 +163,8 @@
     "rules": {
       "url": "https://www.pagat.com/de/jass/coiffeur.html",
       "source": "Pagat"
-    }
+    },
+    "upcoming": false
   },
   {
     "id": "tschau-sepp",
@@ -191,7 +195,8 @@
     "rules": {
       "url": "https://de.wikipedia.org/wiki/Tschau_Sepp",
       "source": "Wikipedia"
-    }
+    },
+    "upcoming": false
   },
   {
     "id": "arschloechle",
@@ -221,7 +226,8 @@
     "rules": {
       "url": "https://de.wikipedia.org/wiki/Arschloch_(Kartenspiel)",
       "source": "Wikipedia"
-    }
+    },
+    "upcoming": false
   },
   {
     "id": "gaemsch",
@@ -252,7 +258,8 @@
     "rules": {
       "url": "https://de.wikipedia.org/wiki/G%C3%A4msch",
       "source": "Wikipedia"
-    }
+    },
+    "upcoming": false
   },
   {
     "id": "schwimmen",
@@ -282,7 +289,8 @@
     "rules": {
       "url": "https://de.wikipedia.org/wiki/Schwimmen_(Kartenspiel)",
       "source": "Wikipedia"
-    }
+    },
+    "upcoming": false
   },
   {
     "id": "romme",
@@ -311,7 +319,8 @@
     "rules": {
       "url": "https://de.wikipedia.org/wiki/Romm%C3%A9",
       "source": "Wikipedia"
-    }
+    },
+    "upcoming": false
   },
   {
     "id": "stiche-ansagen",
@@ -340,7 +349,8 @@
     "rules": {
       "url": "https://www.pagat.com/exact/ohhell.html",
       "source": "Pagat (englisch)"
-    }
+    },
+    "upcoming": false
   },
   {
     "id": "uno",
@@ -368,7 +378,8 @@
     "rules": {
       "url": "https://de.wikipedia.org/wiki/Uno_(Kartenspiel)",
       "source": "Wikipedia"
-    }
+    },
+    "upcoming": true
   },
   {
     "id": "phase-10",
@@ -397,7 +408,8 @@
     "rules": {
       "url": "https://de.wikipedia.org/wiki/Phase_10",
       "source": "Wikipedia"
-    }
+    },
+    "upcoming": true
   },
   {
     "id": "wizard",
@@ -426,7 +438,8 @@
     "rules": {
       "url": "https://de.wikipedia.org/wiki/Wizard_(Spiel)",
       "source": "Wikipedia"
-    }
+    },
+    "upcoming": true
   },
   {
     "id": "qwirkle",
@@ -453,7 +466,8 @@
     "rules": {
       "url": "https://www.schmidtspiele.de/files/Produkte/4/49014%20-%20Qwirkle/49014_Qwirkle_DE-FR-IT.pdf",
       "source": "Schmidt Spiele (PDF)"
-    }
+    },
+    "upcoming": false
   },
   {
     "id": "maexle",
@@ -483,7 +497,8 @@
     "rules": {
       "url": "https://de.wikipedia.org/wiki/M%C3%A4xchen",
       "source": "Wikipedia"
-    }
+    },
+    "upcoming": true
   },
   {
     "id": "frei",
@@ -508,6 +523,7 @@
       "Beim Start wählt ihr, ob die höchste oder die tiefste Summe gewinnt.",
       "Beendet die Partie, wann ihr wollt."
     ],
-    "rules": null
+    "rules": null,
+    "upcoming": false
   }
 ]

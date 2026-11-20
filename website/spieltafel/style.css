@@ -196,6 +196,11 @@ p { margin: 0 0 1em; }
 .games-empty { color: var(--muted); }
 .section-foot { margin-top: 28px; }
 
+.badge-soon {
+	display: inline-block; vertical-align: middle; margin-left: 4px; padding: 1px 8px; border-radius: 10px;
+	background: var(--hint-bg); color: var(--hint-ink); font-size: .75rem; font-weight: 700;
+}
+
 /* Anleitungen */
 .guide-list { display: grid; gap: 22px; }
 .guide {
