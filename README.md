@@ -57,6 +57,10 @@ Ein neues Spiel braucht meist nur einen Eintrag in `src/domain/templates.ts`, in
 
 Runden werden als Rohdaten gespeichert (zum Beispiel Ansage und erzielte Punkte). Die Punkte rechnet die App bei jeder Anzeige neu aus. So bleiben alte Partien richtig, wenn eine Regel korrigiert wird.
 
+## Webseite
+
+Die Webseite zur App ist ein WordPress-Theme in [website/](website/README.md). Spiele und Kurzanleitungen kommen aus `src/domain/templates.ts`, nach einer Änderung `npm run website:data` ausführen.
+
 ## Tablets
 
 Ab einer kürzeren Bildschirmseite von 600 dp gilt ein Gerät als Tablet. Dann werden Schrift, Abstände und Bedienelemente um 30 % grösser und der Inhalt wird auf höchstens 860 dp Breite zentriert (`src/constants/layout.ts`). Auf dem iPad ist die App freigeschaltet (`supportsTablet`), und sie dreht sich mit dem Gerät.
