@@ -28,6 +28,12 @@ export const TemplateColors: Record<string, string> = {
   schwimmen: '#3a7bd5',
   romme: '#d4567f',
   'stiche-ansagen': '#1d2420',
+  wizard: '#3b4fa0',
+  uno: '#d63b3b',
+  'phase-10': '#c77d1e',
+  'skip-bo': '#2c7fb8',
+  'flip-7': '#7a3fb0',
+  maexle: '#5b6b2f',
   qwirkle: '#e0a526',
   frei: '#6b726d',
 };

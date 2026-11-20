@@ -36,4 +36,15 @@ describe('Spielvorlagen', () => {
     const karten = searchTemplates('', 'Kartenspiel').map((t) => t.id);
     expect(karten).toEqual(expect.arrayContaining(['tschau-sepp', 'arschloechle', 'gaemsch', 'schwimmen', 'romme', 'stiche-ansagen']));
   });
+
+  it('enthält Uno, Mäxle, Phase 10, Wizard, Skip-Bo und Flip 7', () => {
+    expect(searchTemplates('uno').map((t) => t.id)).toEqual(['uno']);
+    expect(searchTemplates('mäxchen').map((t) => t.id)).toEqual(['maexle']);
+    expect(searchTemplates('meiern').map((t) => t.id)).toEqual(['maexle']);
+    expect(searchTemplates('phase 10').map((t) => t.id)).toEqual(['phase-10']);
+    expect(searchTemplates('wizard').map((t) => t.id)).toEqual(['wizard']);
+    expect(searchTemplates('skipbo').map((t) => t.id)).toEqual(['skip-bo']);
+    expect(searchTemplates('flip 7').map((t) => t.id)).toEqual(['flip-7']);
+    expect(searchTemplates('', 'Würfelspiel').map((t) => t.id)).toEqual(['maexle']);
+  });
 });

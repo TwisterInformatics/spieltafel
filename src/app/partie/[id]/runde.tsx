@@ -8,7 +8,16 @@ import { useLayout, useScaledStyles } from '@/constants/layout';
 import { Colors } from '@/constants/theme';
 import { addRound, finishGame, getGame } from '@/data/db';
 import { useGame } from '@/data/hooks';
-import { isFinishedByRules, JASS_MATCH, jassCounterPoints, openCoiffeurModes, roundScores, skyjoRoundScores, totals } from '@/domain/scoring';
+import {
+  isFinishedByRules,
+  JASS_MATCH,
+  jassCounterPoints,
+  openCoiffeurModes,
+  phasesDone,
+  roundScores,
+  skyjoRoundScores,
+  totals,
+} from '@/domain/scoring';
 import { getTemplate } from '@/domain/templates';
 import type { Game, Participant, RoundData } from '@/domain/types';
 
@@ -39,11 +48,13 @@ function RoundForm({ game }: { game: Game }) {
   const [modeName, setModeName] = useState<string | null>(null);
   const [teamId, setTeamId] = useState<string>(ps[0]?.id);
   const [stoeck, setStoeck] = useState<string | null>(null);
+  const [done, setDone] = useState<string[]>([]);
 
   const set = (setter: typeof setScores) => (pid: string, v: number | null) => setter((prev) => ({ ...prev, [pid]: v }));
   const modes = game.settings.modes ?? [];
   const mode = modes.find((m) => m.name === modeName);
   const anyValue = Object.values(scores).some((v) => v !== null);
+  const phases = phasesDone(game);
 
   let data: RoundData | null = null;
   let hint: string | null = null;
@@ -79,6 +90,18 @@ function RoundForm({ game }: { game: Game }) {
   } else if (kind === 'coiffeur') {
     const pts = scores[teamId];
     if (modeName && pts !== null) data = { kind: 'coiffeur', teamId, modeName, points: pts };
+  } else if (kind === 'wizard') {
+    const complete = ps.every((p) => scores[p.id] !== null && second[p.id] !== null);
+    if (complete) data = { kind: 'wizard', ansage: filled(scores), stiche: filled(second) };
+    const sum = ps.reduce((acc, p) => acc + (second[p.id] ?? 0), 0);
+    const cards = game.rounds.length + 1;
+    if (ps.every((p) => second[p.id] !== null) && sum !== cards) {
+      hint = `Die Stiche ergeben ${sum}. In Runde ${cards} gibt es ${cards} ${cards === 1 ? 'Stich' : 'Stiche'}.`;
+    } else if (data) {
+      hint = `Diese Runde: ${ps.map((p) => `${p.name} ${roundScores(data!, ps)[p.id]}`).join(' · ')}`;
+    }
+  } else if (kind === 'phase10') {
+    if (anyValue || done.length > 0) data = { kind: 'phase10', scores: filled(scores), done };
   }
 
   async function save() {
@@ -167,7 +190,34 @@ function RoundForm({ game }: { game: Game }) {
         </>
       ) : null}
 
-      {kind === 'differenzler'
+      {kind === 'phase10' ? (
+        <>
+          <View style={wide ? s.playerGrid : s.playerList}>
+            {ps.map((p) => (
+              <PlayerRow
+                key={p.id}
+                p={p}
+                meta={`Phase ${Math.min(phases[p.id] + 1, 10)} · Total ${totals(game)[p.id]}`}
+                style={wide ? s.playerCell : undefined}>
+                <NumberField value={scores[p.id]} onChange={(v) => set(setScores)(p.id, v)} allowNegative={false} />
+              </PlayerRow>
+            ))}
+          </View>
+          <Label>Wer hat seine Phase geschafft?</Label>
+          <View style={ui.wrap}>
+            {ps.map((p) => (
+              <Chip
+                key={p.id}
+                title={`${p.name} · Phase ${Math.min(phases[p.id] + 1, 10)}`}
+                active={done.includes(p.id)}
+                onPress={() => setDone(done.includes(p.id) ? done.filter((x) => x !== p.id) : [...done, p.id])}
+              />
+            ))}
+          </View>
+        </>
+      ) : null}
+
+      {kind === 'differenzler' || kind === 'wizard'
         ? ps.map((p) => (
             <Card key={p.id} style={{ flexDirection: 'column', alignItems: 'stretch', gap: 10 }}>
               <View style={ui.row}>
@@ -178,7 +228,7 @@ function RoundForm({ game }: { game: Game }) {
               <View style={[ui.row, { justifyContent: 'space-between' }]}>
                 <Text style={ui.meta}>Ansage</Text>
                 <NumberField value={scores[p.id]} onChange={(v) => set(setScores)(p.id, v)} allowNegative={false} />
-                <Text style={ui.meta}>Erzielt</Text>
+                <Text style={ui.meta}>{kind === 'wizard' ? 'Stiche' : 'Erzielt'}</Text>
                 <NumberField value={second[p.id]} onChange={(v) => set(setSecond)(p.id, v)} allowNegative={false} />
               </View>
             </Card>

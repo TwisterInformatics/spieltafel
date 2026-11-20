@@ -26,6 +26,7 @@ export default function NewGameScreen() {
   const [rounds, setRounds] = useState<number | null>(template?.end.type === 'rounds' ? template.end.rounds : null);
   const [winner, setWinner] = useState<WinnerRule>(template?.winner ?? 'highest');
   const [saving, setSaving] = useState(false);
+  const [roundsEdited, setRoundsEdited] = useState(false);
 
   useEffect(() => {
     recentPlayers(db).then(setRecent);
@@ -36,8 +37,11 @@ export default function NewGameScreen() {
   const max = isTeams ? initialCount : template.maxPlayers;
   const filled = names.map((n) => n.trim()).filter(Boolean);
   const enough = isTeams ? filled.length === initialCount : filled.length >= template.minPlayers;
+  // Wizard: Runden ergeben sich aus den Karten, bis jemand die Zahl selbst ändert.
+  const deckRounds = template.roundsFromDeck ? Math.floor(template.roundsFromDeck / Math.max(filled.length, template.minPlayers)) : null;
+  const effectiveRounds = deckRounds !== null && !roundsEdited ? deckRounds : rounds;
   const settingsOk =
-    (template.end.type !== 'target' || (target ?? 0) > 0) && (template.end.type !== 'rounds' || (rounds ?? 0) > 0);
+    (template.end.type !== 'target' || (target ?? 0) > 0) && (template.end.type !== 'rounds' || (effectiveRounds ?? 0) > 0);
 
   const setName = (i: number, v: string) => setNames((prev) => prev.map((n, j) => (j === i ? v : n)));
   const fillNext = (name: string) => {
@@ -61,7 +65,7 @@ export default function NewGameScreen() {
     }
     let end: EndRule = template.end;
     if (end.type === 'target') end = { type: 'target', target: target ?? end.target };
-    if (end.type === 'rounds') end = { type: 'rounds', rounds: rounds ?? end.rounds };
+    if (end.type === 'rounds') end = { type: 'rounds', rounds: effectiveRounds ?? end.rounds };
     const settings: GameSettings = { winner, end, modes: template.modes };
     const id = await createGame(db, template.id, participants, settings);
     router.replace(`/partie/${id}`);
@@ -128,7 +132,21 @@ export default function NewGameScreen() {
       {template.end.type === 'rounds' ? (
         <Card style={s.setting}>
           <Text style={s.settingText}>Anzahl Runden</Text>
-          <NumberField value={rounds} onChange={setRounds} width={100} allowNegative={false} />
+          <NumberField
+            value={effectiveRounds}
+            onChange={(v) => {
+              setRoundsEdited(true);
+              setRounds(v);
+            }}
+            width={100}
+            allowNegative={false}
+          />
+        </Card>
+      ) : null}
+      {template.end.type === 'phases' ? (
+        <Card style={s.setting}>
+          <Text style={s.settingText}>Spielende</Text>
+          <Text style={s.value}>{`Wer zuerst Phase ${template.end.phases} schafft`}</Text>
         </Card>
       ) : null}
       {template.end.type === 'manual' ? (

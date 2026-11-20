@@ -9,7 +9,7 @@ import { useLayout, useScaledStyles } from '@/constants/layout';
 import { Colors } from '@/constants/theme';
 import { createGame, deleteLastRound, finishGame, resumeGame } from '@/data/db';
 import { useGame } from '@/data/hooks';
-import { isFinishedByRules, ranking, scoreTable, totals } from '@/domain/scoring';
+import { isFinishedByRules, phasesDone, ranking, scoreTable, totals } from '@/domain/scoring';
 import { winnerText } from '@/domain/summary';
 import { getTemplate } from '@/domain/templates';
 import type { Game } from '@/domain/types';
@@ -140,6 +140,10 @@ export default function ScoreboardScreen() {
   );
 }
 
+function phaseGoal(game: Game): number {
+  return game.settings.end.type === 'phases' ? game.settings.end.phases : 10;
+}
+
 /** Teams heissen "Anna und Ben" und brauchen den Plural. */
 function verb(name: string, singular: string, plural: string): string {
   return name.includes(' und ') ? plural : singular;
@@ -151,6 +155,7 @@ function statusLine(game: Game): string {
   const base = n === 1 ? 'nach 1 Runde' : `nach ${n} Runden`;
   if (end.type === 'target') return `${base} · Ziel ${end.target}`;
   if (end.type === 'rounds') return `${base} von ${end.rounds}`;
+  if (end.type === 'phases') return `${base} · bis Phase ${end.phases}`;
   return base;
 }
 
@@ -165,6 +170,7 @@ function ScoreTable({ game }: { game: Game }) {
   const s = useScaledStyles(sBase);
   const rows = scoreTable(game);
   const t = totals(game);
+  const phases = game.settings.end.type === 'phases' ? phasesDone(game) : null;
   const many = game.participants.length > 4;
   const colW = many ? 72 : undefined;
   const cell = (key: string, text: string, style?: object) => (
@@ -188,6 +194,12 @@ function ScoreTable({ game }: { game: Game }) {
         {cell('t', 'Total', [s.first, s.totalText])}
         {game.participants.map((p) => cell(p.id, String(t[p.id]), s.totalText))}
       </View>
+      {phases ? (
+        <View style={[s.tr, s.total]}>
+          {cell('ph', 'Phasen', [s.first, s.totalText])}
+          {game.participants.map((p) => cell(p.id, `${phases[p.id]}/${phaseGoal(game)}`, s.totalText))}
+        </View>
+      ) : null}
     </View>
   );
   return many ? <ScrollView horizontal>{table}</ScrollView> : table;
@@ -198,6 +210,13 @@ function Progress({ game }: { game: Game }) {
   const s = useScaledStyles(sBase);
   const end = game.settings.end;
   const leader = ranking(game)[0];
+  if (end.type === 'phases' && leader.phases !== undefined) {
+    return (
+      <Card>
+        <Text style={ui.cardTitle}>{`${leader.participant.name} ${verb(leader.participant.name, 'führt', 'führen')} mit ${leader.phases} von ${end.phases} Phasen`}</Text>
+      </Card>
+    );
+  }
   if (end.type === 'target') {
     const t = totals(game);
     const top = game.participants.reduce((a, b) => (t[a.id] >= t[b.id] ? a : b));
@@ -231,7 +250,9 @@ function Winner({ game }: { game: Game }) {
         <Text style={s.crownText}>{top.participant.name.charAt(0)}</Text>
       </View>
       <Text style={s.winnerText}>{winnerText(game)}</Text>
-      <Text style={s.winnerSub}>{`mit ${top.total} Punkten`}</Text>
+      <Text style={s.winnerSub}>
+        {top.phases !== undefined ? `${top.phases} von ${phaseGoal(game)} Phasen · ${top.total} Punkte` : `mit ${top.total} Punkten`}
+      </Text>
     </View>
   );
 }
@@ -250,7 +271,7 @@ function Ranking({ game, compact }: { game: Game; compact?: boolean }) {
             <Text style={[ui.cardTitle, { flex: 1 }]} numberOfLines={1}>
               {e.participant.name}
             </Text>
-            <Text style={s.rankTotal}>{e.total}</Text>
+            <Text style={s.rankTotal}>{e.phases !== undefined ? `${e.phases}/${phaseGoal(game)} · ${e.total}` : e.total}</Text>
           </View>
         ))}
       </View>
@@ -263,7 +284,7 @@ function Ranking({ game, compact }: { game: Game; compact?: boolean }) {
           <Text style={s.rank}>{e.rank}</Text>
           <Avatar name={e.participant.name} color={e.participant.color} />
           <Text style={[ui.cardTitle, { flex: 1 }]}>{e.participant.name}</Text>
-          <Text style={s.rankTotal}>{e.total}</Text>
+          <Text style={s.rankTotal}>{e.phases !== undefined ? `${e.phases}/${phaseGoal(game)} · ${e.total}` : e.total}</Text>
         </Card>
       ))}
     </>
